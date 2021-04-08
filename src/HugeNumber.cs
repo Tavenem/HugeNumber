@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
-namespace Tavenem.HugeNumber
+namespace Tavenem.HugeNumbers
 {
     /// <summary>
     /// <para>

@@ -1,4 +1,4 @@
-﻿namespace Tavenem.HugeNumber
+﻿namespace Tavenem.HugeNumbers
 {
     internal static class HugeNumberErrorMessages
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tavenem.HugeNumber
+namespace Tavenem.HugeNumbers
 {
     public partial struct HugeNumber :
         IComparable,

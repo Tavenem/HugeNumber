@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text;
 
-namespace Tavenem.HugeNumber
+namespace Tavenem.HugeNumbers
 {
     /// <summary>
     /// A custom formatter and format provider for <see cref="HugeNumber"/>.

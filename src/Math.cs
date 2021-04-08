@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tavenem.HugeNumber
+namespace Tavenem.HugeNumbers
 {
 #pragma warning disable CS0419
     public partial struct HugeNumber

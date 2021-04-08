@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Tavenem.HugeNumber.Test
+namespace Tavenem.HugeNumbers.Test
 {
     [TestClass]
     public class MiscTests

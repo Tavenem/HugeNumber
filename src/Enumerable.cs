@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tavenem.HugeNumber
+namespace Tavenem.HugeNumbers
 {
     /// <summary>
     /// Extensions to <see cref="IEnumerable{T}"/> for the <see cref="HugeNumber"/> type.

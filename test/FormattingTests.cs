@@ -2,7 +2,7 @@
 using System;
 using System.Globalization;
 
-namespace Tavenem.HugeNumber.Test
+namespace Tavenem.HugeNumbers.Test
 {
     [TestClass]
     public class FormattingTests

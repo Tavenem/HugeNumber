@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Tavenem.HugeNumber
+namespace Tavenem.HugeNumbers
 {
     /// <summary>
     /// Converts a <see cref="HugeNumber"/> to or from JSON.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Tavenem.HugeNumber
+namespace Tavenem.HugeNumbers
 {
     [System.Diagnostics.DebuggerDisplay("{DebugDisplay}")]
     public partial struct HugeNumber : IFormattable
