@@ -468,7 +468,7 @@ namespace Tavenem.HugeNumbers
                         if (nextDigit >= 5)
                         {
                             mantissaSpan = new StringBuilder()
-                                .Append(mantissaSpan[0..^1])
+                                .Append(mantissaSpan[..^1])
                                 .Append(int.Parse(mantissaSpan[^1..]) + 1)
                                 .ToString();
                         }
@@ -478,20 +478,28 @@ namespace Tavenem.HugeNumbers
             else if (optionalCondense && exponent < 0)
             {
                 var insertPoint = rawMantissaSpan.Length + exponent;
-                mantissaSpan = insertPoint == 0
-                    ? new StringBuilder("0")
-                        .Append(decimalSeparator)
-                        .Append(rawMantissaSpan)
-                        .ToString()
-                        .AsSpan()
-                        .TrimEnd('0')
-                    : new StringBuilder()
+                var mantissaSb = new StringBuilder();
+                if (insertPoint <= 0)
+                {
+                    mantissaSb.Append('0')
+                        .Append(decimalSeparator);
+                    for (var i = 0; i < -exponent - rawMantissaSpan.Length; i++)
+                    {
+                        mantissaSb.Append('0');
+                    }
+                    mantissaSb.Append(rawMantissaSpan);
+                }
+                else
+                {
+                    mantissaSb
                         .Append(rawMantissaSpan.Slice(0, rawMantissaSpan.Length + exponent))
                         .Append(decimalSeparator)
-                        .Append(rawMantissaSpan[(rawMantissaSpan.Length + exponent)..])
-                        .ToString()
-                        .AsSpan()
-                        .TrimEnd('0');
+                        .Append(rawMantissaSpan[(rawMantissaSpan.Length + exponent)..]);
+                }
+                mantissaSpan = mantissaSb
+                    .ToString()
+                    .AsSpan()
+                    .TrimEnd('0');
                 if (mantissaSpan.EndsWith(decimalSeparator))
                 {
                     mantissaSpan = mantissaSpan.Slice(0, mantissaSpan.Length - decimalSeparator.Length);
@@ -510,7 +518,7 @@ namespace Tavenem.HugeNumbers
                         if (nextDigit >= 5)
                         {
                             mantissaSpan = new StringBuilder()
-                                .Append(mantissaSpan[0..^1])
+                                .Append(mantissaSpan[..^1])
                                 .Append(int.Parse(mantissaSpan[^1..]) + 1)
                                 .ToString();
                         }
@@ -575,7 +583,7 @@ namespace Tavenem.HugeNumbers
                             if (nextDigit >= 5)
                             {
                                 mantissaSpan = new StringBuilder()
-                                    .Append(mantissaSpan[0..^1])
+                                    .Append(mantissaSpan[..^1])
                                     .Append(int.Parse(mantissaSpan[^1..]) + 1)
                                     .ToString();
                             }

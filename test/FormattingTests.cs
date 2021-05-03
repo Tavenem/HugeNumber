@@ -17,7 +17,9 @@ namespace Tavenem.HugeNumbers.Test
         [TestMethod]
         public void ToStringTest()
         {
+            Assert.AreEqual("0", HugeNumber.Zero.ToString());
             Assert.AreEqual("1", HugeNumber.One.ToString());
+            Assert.AreEqual("0.050000000000000003", new HugeNumber(50000000000000003, -18).ToString());
 
             Assert.AreEqual("2e42", new HugeNumber(2, 42).ToString());
 
