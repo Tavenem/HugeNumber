@@ -3,13 +3,14 @@
 Tavenem.HugeNumber
 ==
 
-Tavenem.HugeNumber provides a struct which allows efficient recording of values in the range ±999999999999999999x10<sup>±32767</sup>. Also allows
-representing positive or negative infinity, and NaN (not-a-number).
+Tavenem.HugeNumber provides a struct which allows efficient recording of values in the range
+±999999999999999999x10<sup>±32767</sup>. Also allows representing positive or negative infinity,
+and NaN (not-a-number).
 
-The extreme potential range trades off with precision: values have at most 18 significant
-digits in the mantissa, and 5 in the exponent. These limits are fixed independently of one
-another; they do not trade off, as with the standard floating-point types. I.e. you cannot
-have only one significent digit in the mantissa and thereby gain 22 in the exponent.
+Values have at most 18 significant digits in the mantissa, and 5 in the exponent. These limits are
+fixed independently of one another; they do not trade off, as with the standard floating-point
+types. I.e. you cannot have only one significent digit in the mantissa and thereby gain 22 in the
+exponent.
 
 Despite the ability to record floating-point values, `HugeNumber` values are internally stored as
 integral pairs of mantissa and exponent. Therefore, arithmatic operations between `HugeNumber` values

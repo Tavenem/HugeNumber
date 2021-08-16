@@ -1,5 +1,29 @@
 # Changelog
 
+## 2.0.0-preview.1
+### Changed
+- Update to .NET 6 preview
+- Update to C# 10 preview
+- Implement `IFloatingPoint`
+- Rename static `e` to `E` to align with `IFloatingPoint`
+- Rename static `PI` and related to `Pi` to align with `IFloatingPoint`
+- Rename static `phi` to `Phi` to align with others
+- Changed the signature of `DivRem` to align with `INumber`
+- Changed the return type of `Sign` to `HugeNumber` to align with `INumber`
+- Renamed `CubeRoot` to `Cbrt` to align with `IFloatingPoint`
+- Renamed `Ln` to `Log` to align with `IFloatingPoint`
+- Removed overload of existing `Log` instance method to avoid conflict
+- Changed property `IsInfinite` to method `IsInfinity` to better align with `IFloatingPoint`
+- Changed `IsFinite`, `IsNaN`, `IsNegative`, `IsNegativeInfinity`, `IsPositive`, `IsPositiveInfinity` properties to methods to better align with `IFloatingPoint`
+- Changed internal structure
+    - Eliminated bit fields used to track infinity, NaN. Invalid mantissa and/or exponent values now indicate those states.
+      These invalid values cannot be set using any public constructor.
+    - Serialization has changed, since the bit fields are no longer used.
+      This is a **breaking change**.
+      Values serialized using previous versions will not deserialize properly with new versions, and vice versa.
+- Removed `IsZero` property, optimized equality to short-circuit on zero instead
+- Changed default rounding to nearest even, to better align with `IFloatingPoint`, and added overloads with a `MidpointRounding` parameter
+
 ## 1.0.2
 ### Fixed
 - Corrected formatting error
