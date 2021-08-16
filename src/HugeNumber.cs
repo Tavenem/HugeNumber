@@ -39,7 +39,7 @@ namespace Tavenem.HugeNumbers;
 [Serializable]
 [DataContract]
 [JsonConverter(typeof(HugeNumberConverter))]
-public partial struct HugeNumber :
+readonly public partial struct HugeNumber :
     IAdditionOperators<HugeNumber, decimal, HugeNumber>,
     IAdditionOperators<HugeNumber, double, HugeNumber>,
     IAdditionOperators<HugeNumber, long, HugeNumber>,

@@ -2,7 +2,7 @@
 
 ## 2.0.0-preview.2
 ### Changed
-- Rename static `Pi` back to `PI` to align with `IFloatingPoint`, keep related in camel case
+- Make `HugeNumber` struct readonly
 
 ## 2.0.0-preview.1
 ### Changed
