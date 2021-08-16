@@ -37,7 +37,7 @@ public partial struct HugeNumber
     private static readonly HugeNumber _PositiveInfinity = new(true, POSITIVE_INFINITE_MANTISSA);
 
     private static readonly HugeNumber _E = new(271828182845904524, -17);
-    private static readonly HugeNumber _Pi = new(314159265358979324, -17);
+    private static readonly HugeNumber _PI = new(314159265358979324, -17);
     private static readonly HugeNumber _Tau = new(628318530717958647, -17);
     private static readonly HugeNumber _Ln2 = new(693147180559945309, -18);
     private static readonly HugeNumber _Ln10 = new(230258509299404568, -17);
@@ -46,20 +46,20 @@ public partial struct HugeNumber
 
     private static readonly HugeNumber _Third = _One / 3;
 
-    private static readonly HugeNumber _EighthPi = _Pi / new HugeNumber(8);
+    private static readonly HugeNumber _EighthPi = _PI / new HugeNumber(8);
     private static readonly HugeNumber _FourPi = _Tau * new HugeNumber(2);
-    private static readonly HugeNumber _HalfPi = _Pi * _Half;
+    private static readonly HugeNumber _HalfPi = _PI * _Half;
     private static readonly HugeNumber _InverseE = _One / _E;
-    private static readonly HugeNumber _InversePi = _One / _Pi;
-    private static readonly HugeNumber _OneEightyOverPi = new HugeNumber(180) / _Pi;
-    private static readonly HugeNumber _PiOver180 = _Pi / new HugeNumber(180);
-    private static readonly HugeNumber _PiSquared = _Pi * _Pi;
-    private static readonly HugeNumber _QuarterPi = _Pi / new HugeNumber(4);
-    private static readonly HugeNumber _SixthPi = _Pi / new HugeNumber(6);
-    private static readonly HugeNumber _ThreePi = _Tau + _Pi;
+    private static readonly HugeNumber _InversePi = _One / _PI;
+    private static readonly HugeNumber _OneEightyOverPi = new HugeNumber(180) / _PI;
+    private static readonly HugeNumber _PiOver180 = _PI / new HugeNumber(180);
+    private static readonly HugeNumber _PiSquared = _PI * _PI;
+    private static readonly HugeNumber _QuarterPi = _PI / new HugeNumber(4);
+    private static readonly HugeNumber _SixthPi = _PI / new HugeNumber(6);
+    private static readonly HugeNumber _ThreePi = _Tau + _PI;
 
     private static readonly HugeNumber _FourThirdsPi = _FourPi * _Third;
-    private static readonly HugeNumber _ThirdPi = _Pi * _Third;
+    private static readonly HugeNumber _ThirdPi = _PI * _Third;
     private static readonly HugeNumber _ThreeHalvesPi = _ThreePi * _Half;
     private static readonly HugeNumber _ThreeQuartersPi = _ThreePi / new HugeNumber(4);
     private static readonly HugeNumber _TwoPiSquared = new HugeNumber(2) * _PiSquared;
@@ -285,7 +285,7 @@ public partial struct HugeNumber
     /// constant, π, rounded to 18 places of precision, which is the limit of the <see
     /// cref="HugeNumber"/> structure.
     /// </summary>
-    public static HugeNumber Pi => _Pi;
+    public static HugeNumber PI => _PI;
 
     /// <summary>
     /// Represents the ratio of the circumference of a circle to its radius, specified by the

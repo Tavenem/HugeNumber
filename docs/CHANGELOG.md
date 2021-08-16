@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0-preview.2
+### Changed
+- Rename static `Pi` back to `PI` to align with `IFloatingPoint`, keep related in camel case
+
 ## 2.0.0-preview.1
 ### Changed
 - Update to .NET 6 preview

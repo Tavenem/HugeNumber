@@ -23,7 +23,7 @@ public partial struct HugeNumber
     /// <para>
     /// A positive return value represents a counterclockwise angle from the x-axis; a negative
     /// return value represents a clockwise angle. Multiply the return value by 180/<see
-    /// cref="Pi"/> to convert from radians to degrees.
+    /// cref="PI"/> to convert from radians to degrees.
     /// </para>
     /// <para>
     /// This method directly computes the result to a high degree of precision. It does not take
@@ -68,7 +68,7 @@ public partial struct HugeNumber
     /// <para>
     /// A positive return value represents a counterclockwise angle from the x-axis; a negative
     /// return value represents a clockwise angle. Multiply the return value by 180/<see
-    /// cref="Pi"/> to convert from radians to degrees.
+    /// cref="PI"/> to convert from radians to degrees.
     /// </para>
     /// <para>
     /// This method directly computes the result to a high degree of precision. It does not take
@@ -110,7 +110,7 @@ public partial struct HugeNumber
     /// <para>
     /// A positive return value represents a counterclockwise angle from the x-axis; a negative
     /// return value represents a clockwise angle. Multiply the return value by 180/<see
-    /// cref="Pi"/> to convert from radians to degrees.
+    /// cref="PI"/> to convert from radians to degrees.
     /// </para>
     /// <para>
     /// This method directly computes the result to a high degree of precision. It does not take
@@ -153,7 +153,7 @@ public partial struct HugeNumber
     /// <para>
     /// A positive return value represents a counterclockwise angle from the x-axis; a negative
     /// return value represents a clockwise angle. Multiply the return value by 180/<see
-    /// cref="Pi"/> to convert from radians to degrees.
+    /// cref="PI"/> to convert from radians to degrees.
     /// </para>
     /// <para>
     /// This method directly computes the result to a high degree of precision. It does not take
@@ -202,7 +202,7 @@ public partial struct HugeNumber
     /// <para>
     /// A positive return value represents a counterclockwise angle from the x-axis; a negative
     /// return value represents a clockwise angle. Multiply the return value by 180/<see
-    /// cref="Pi"/> to convert from radians to degrees.
+    /// cref="PI"/> to convert from radians to degrees.
     /// </para>
     /// <para>
     /// This method directly computes the result to a high degree of precision. It does not take
@@ -370,7 +370,7 @@ public partial struct HugeNumber
         }
         if (x.Mantissa == 0)
         {
-            return y >= 0 ? 0 : Pi;
+            return y >= 0 ? 0 : PI;
         }
         if (y.Mantissa == 0)
         {
@@ -403,11 +403,11 @@ public partial struct HugeNumber
             }
             else if (x >= 0)
             {
-                return Pi;
+                return PI;
             }
             else
             {
-                return -Pi;
+                return -PI;
             }
         }
         if (x.IsPositiveInfinity())
@@ -424,9 +424,9 @@ public partial struct HugeNumber
         }
         if (y > 0)
         {
-            return Atan(y / x) + Pi;
+            return Atan(y / x) + PI;
         }
-        return Atan(y / x) - Pi;
+        return Atan(y / x) - PI;
     }
 
     /// <summary>
@@ -450,7 +450,7 @@ public partial struct HugeNumber
     /// <para>
     /// A positive return value represents a counterclockwise angle from the x-axis; a negative
     /// return value represents a clockwise angle. Multiply the return value by 180/<see
-    /// cref="Pi"/> to convert from radians to degrees.
+    /// cref="PI"/> to convert from radians to degrees.
     /// </para>
     /// <para>
     /// This method directly computes the result to a high degree of precision. It does not take
@@ -517,13 +517,13 @@ public partial struct HugeNumber
         {
             return Cos(TwoPi - value);
         }
-        if (value > Pi)
+        if (value > PI)
         {
-            return -Cos(value - Pi);
+            return -Cos(value - PI);
         }
         if (value > HalfPi)
         {
-            return -Cos(Pi - value);
+            return -Cos(PI - value);
         }
         if (value > QuarterPi)
         {
@@ -630,13 +630,13 @@ public partial struct HugeNumber
         {
             return -Sin(TwoPi - value);
         }
-        if (value > Pi)
+        if (value > PI)
         {
-            return -Sin(value - Pi);
+            return -Sin(value - PI);
         }
         if (value > HalfPi)
         {
-            return Sin(Pi - value);
+            return Sin(PI - value);
         }
         if (value > QuarterPi)
         {
@@ -732,17 +732,17 @@ public partial struct HugeNumber
         {
             return -Tan(-value);
         }
-        if (value > Pi)
+        if (value > PI)
         {
-            return Tan(value - (Pi * (value / Pi).Floor()));
+            return Tan(value - (PI * (value / PI).Floor()));
         }
         if (value > ThreeQuartersPi)
         {
-            return 1 / -Tan(Pi - value);
+            return 1 / -Tan(PI - value);
         }
         if (value > HalfPi)
         {
-            return -Tan(Pi - value);
+            return -Tan(PI - value);
         }
         if (value > QuarterPi)
         {
