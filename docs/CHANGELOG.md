@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0-preview.3
+### Removed
+- Removed support for non-JSON serialization
+
 ## 2.0.0-preview.2
 ### Changed
 - Make `HugeNumber` struct readonly

@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Tavenem.HugeNumbers;
 
@@ -36,8 +35,6 @@ namespace Tavenem.HugeNumbers;
 /// irrational values, or have been converted from a non-HugeNumber floating point value.
 /// </para>
 /// </remarks>
-[Serializable]
-[DataContract]
 [JsonConverter(typeof(HugeNumberConverter))]
 readonly public partial struct HugeNumber :
     IAdditionOperators<HugeNumber, decimal, HugeNumber>,
@@ -50,7 +47,7 @@ readonly public partial struct HugeNumber :
     IComparable<int>,
     IComparable<long>,
     IComparable<ulong>,
-    IComparableToZero<HugeNumber>,
+    IFloatingPoint<HugeNumber>,
     IComparisonOperators<HugeNumber, decimal>,
     IComparisonOperators<HugeNumber, double>,
     IComparisonOperators<HugeNumber, long>,
@@ -78,7 +75,6 @@ readonly public partial struct HugeNumber :
     IMultiplyOperators<HugeNumber, double, HugeNumber>,
     IMultiplyOperators<HugeNumber, long, HugeNumber>,
     IMultiplyOperators<HugeNumber, ulong, HugeNumber>,
-    ISerializable,
     ISubtractionOperators<HugeNumber, decimal, HugeNumber>,
     ISubtractionOperators<HugeNumber, double, HugeNumber>,
     ISubtractionOperators<HugeNumber, long, HugeNumber>,
@@ -96,14 +92,12 @@ readonly public partial struct HugeNumber :
     /// The power of ten by which the <see cref="Mantissa"/> is multiplied to determine the
     /// value of this <see cref="HugeNumber"/>.
     /// </summary>
-    [DataMember(Order = 1)]
     public short Exponent { get; }
 
     /// <summary>
     /// The value which is multiplied by ten times the <see cref="Exponent"/> to determine the
     /// value of this <see cref="HugeNumber"/>.
     /// </summary>
-    [DataMember(Order = 2)]
     public long Mantissa { get; }
 
     /// <summary>
@@ -444,12 +438,6 @@ readonly public partial struct HugeNumber :
         Exponent = exponent;
     }
 
-    private HugeNumber(SerializationInfo info, StreamingContext context) : this(
-        true,
-        (long?)info.GetValue(nameof(Mantissa), typeof(long)) ?? default,
-        (short?)info.GetValue(nameof(Exponent), typeof(short)) ?? default)
-    { }
-
     /// <summary>
     /// Initializes a new instance of <see cref="HugeNumber"/> with the given <paramref
     /// name="mantissa"/> and <paramref name="exponent"/>.
@@ -582,19 +570,5 @@ readonly public partial struct HugeNumber :
         }
 
         return (long)mantissa;
-    }
-
-    /// <summary>Populates a <see cref="SerializationInfo"></see> with the data needed to
-    /// serialize the target object.</summary>
-    /// <param name="info">The <see cref="SerializationInfo"></see> to populate with
-    /// data.</param>
-    /// <param name="context">The destination (see <see cref="StreamingContext"></see>) for this
-    /// serialization.</param>
-    /// <exception cref="System.Security.SecurityException">The caller does not have the
-    /// required permission.</exception>
-    public void GetObjectData(SerializationInfo info, StreamingContext context)
-    {
-        info.AddValue(nameof(Exponent), Exponent);
-        info.AddValue(nameof(Mantissa), Mantissa);
     }
 }
