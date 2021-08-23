@@ -1,4 +1,6 @@
-﻿namespace Tavenem.HugeNumbers.Test;
+﻿using Tavenem.Mathematics;
+
+namespace Tavenem.HugeNumbers.Test;
 
 [TestClass]
 public class MiscTests

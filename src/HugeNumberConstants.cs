@@ -27,6 +27,240 @@ namespace Tavenem.Mathematics;
 /// </remarks>
 public static class HugeNumberConstants
 {
+    #region Numbers
+
+    /// <summary>
+    /// Represents 1e-18 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Atto { get; } = new(1, -18);
+
+    /// <summary>
+    /// Represents 1 / 100 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Centi { get; } = new(1, 100, 0);
+
+    /// <summary>
+    /// Represents 10 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Deca { get; } = new(10);
+
+    /// <summary>
+    /// Represents 1 / 10 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Deci { get; } = new(1, 10, 0);
+
+    /// <summary>
+    /// Represents 1e18 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Exa { get; } = new(100000000000000000, 1);
+
+    /// <summary>
+    /// Represents 1e-15 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Femto { get; } = new(1, -15);
+
+    /// <summary>
+    /// Represents 1000000000 (1e9) as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Giga { get; } = new(1000000000);
+
+    /// <summary>
+    /// Respresents ½ as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Half { get; } = new(1, 2, 0);
+
+    /// <summary>
+    /// Represents 100 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Hecto { get; } = new(100);
+
+    /// <summary>
+    /// Represents 1000 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Kilo { get; } = new(1000);
+
+    /// <summary>
+    /// Represents 1000000 (1e6) as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Mega { get; } = new(1000000);
+
+    /// <summary>
+    /// Represents 1e-6 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Micro { get; } = new(1, -6);
+
+    /// <summary>
+    /// Represents 1 / 1000 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Milli { get; } = new(1, 1000, 0);
+
+    /// <summary>
+    /// Represents 1e-9 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Nano { get; } = new(1, -9);
+
+    /// <summary>
+    /// Represents 1000000000000000 (1e15) as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Peta { get; } = new(1000000000000000);
+
+    /// <summary>
+    /// Represents 1e-12 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Pico { get; } = new(1, -12);
+
+    /// <summary>
+    /// Represents 10 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Ten { get; } = new(10);
+
+    /// <summary>
+    /// Represents 1000000000000 (1e12) as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Tera { get; } = new(1000000000000);
+
+    /// <summary>
+    /// Respresents ⅓ as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Third { get; } = new(1, 3, 0);
+
+    /// <summary>
+    /// Represents 1e-24 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Yocto { get; } = new(1, -24);
+
+    /// <summary>
+    /// Represents 1e24 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Yotta { get; } = new(100000000000000000, 7);
+
+    /// <summary>
+    /// Represents 1e-21 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Zepto { get; } = new(1, -21);
+
+    /// <summary>
+    /// Represents 1e21 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Zetta { get; } = new(100000000000000000, 4);
+
+    #endregion Numbers
+
+    #region Math
+
+    /// <summary>
+    /// The natural logarithm of 2, rounded to 18 places of precision, which is the limit of
+    /// the <see cref="HugeNumber"/> structure.
+    /// </summary>
+    public static HugeNumber Ln2 { get; } = new(693147180559945309, -18);
+
+    /// <summary>
+    /// The natural logarithm of 10, rounded to 18 places of precision, which is the limit of
+    /// the <see cref="HugeNumber"/> structure.
+    /// </summary>
+    public static HugeNumber Ln10 { get; } = new(230258509299404568, -17);
+
+    /// <summary>
+    /// Represents the golden ratio, specified by the constant, φ, rounded to 18 places of
+    /// precision, which is the limit of the <see cref="HugeNumber"/> structure.
+    /// </summary>
+    public static HugeNumber Phi { get; } = new(161803398874989485, -17);
+
+    /// <summary>
+    /// √2 rounded to 18 places of precision, which is the limit of the <see cref="HugeNumber"/>
+    /// structure.
+    /// </summary>
+    public static HugeNumber Root2 { get; } = new(141421356237309505, -17);
+
+    /// <summary>
+    /// 1/8π
+    /// </summary>
+    public static HugeNumber EighthPi { get; } = HugeNumber.Pi / new HugeNumber(8);
+
+    /// <summary>
+    /// 4π
+    /// </summary>
+    public static HugeNumber FourPi { get; } = HugeNumber.Tau * new HugeNumber(2);
+
+    /// <summary>
+    /// ½π
+    /// </summary>
+    public static HugeNumber HalfPi { get; } = HugeNumber.Pi * Half;
+
+    /// <summary>
+    /// 1/e
+    /// </summary>
+    public static HugeNumber InverseE { get; } = HugeNumber.One / HugeNumber.E;
+
+    /// <summary>
+    /// 1/π
+    /// </summary>
+    public static HugeNumber InversePi { get; } = HugeNumber.One / HugeNumber.Pi;
+
+    /// <summary>
+    /// 180/π
+    /// </summary>
+    public static HugeNumber OneEightyOverPi { get; } = new HugeNumber(180) / HugeNumber.Pi;
+
+    /// <summary>
+    /// π/180
+    /// </summary>
+    public static HugeNumber PiOver180 { get; } = HugeNumber.Pi / new HugeNumber(180);
+
+    /// <summary>
+    /// π²
+    /// </summary>
+    public static HugeNumber PiSquared { get; } = HugeNumber.Pi * HugeNumber.Pi;
+
+    /// <summary>
+    /// ¼π
+    /// </summary>
+    public static HugeNumber QuarterPi { get; } = HugeNumber.Pi / new HugeNumber(4);
+
+    /// <summary>
+    /// 1/6π
+    /// </summary>
+    public static HugeNumber SixthPi { get; } = HugeNumber.Pi / new HugeNumber(6);
+
+    /// <summary>
+    /// 2π
+    /// </summary>
+    public static HugeNumber TwoPi => HugeNumber.Tau;
+
+    /// <summary>
+    /// 3π
+    /// </summary>
+    public static HugeNumber ThreePi { get; } = HugeNumber.Tau + HugeNumber.Pi;
+
+    /// <summary>
+    /// π+⅓π
+    /// </summary>
+    public static HugeNumber FourThirdsPi { get; } = FourPi * Third;
+
+    /// <summary>
+    /// ⅓π
+    /// </summary>
+    public static HugeNumber ThirdPi { get; } = HugeNumber.Pi * Third;
+
+    /// <summary>
+    /// π+½π
+    /// </summary>
+    public static HugeNumber ThreeHalvesPi { get; } = ThreePi * Half;
+
+    /// <summary>
+    /// ¾π
+    /// </summary>
+    public static HugeNumber ThreeQuartersPi { get; } = ThreePi / new HugeNumber(4);
+
+    /// <summary>
+    /// 2π²
+    /// </summary>
+    public static HugeNumber TwoPiSquared { get; } = new HugeNumber(2) * PiSquared;
+
+    #endregion Math
+
+    #region Science
+
     /// <summary>
     /// The Avogadro constant (<i>N</i><sub>A</sub>, <i>L</i>), in SI base units.
     /// </summary>
@@ -219,4 +453,6 @@ public static class HugeNumberConstants
     /// The molar mass of air divided by the universal gas constant, in SI base units.
     /// </summary>
     public static readonly HugeNumber MAirOverR = MAir / R;
+
+    #endregion Science
 }

@@ -318,7 +318,7 @@ public partial struct HugeNumber
             exponent -= str.Length - sepIndex - CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator.Length;
         }
         var neg = str.StartsWith(CultureInfo.InvariantCulture.NumberFormat.NegativeSign);
-        var mantissaStr = string.Concat(str.ToArray().Where(char.IsDigit));
+        var mantissaStr = string.Concat(str.ToArray().Where(char.IsDigit)).TrimStart('0');
         var diff = mantissaStr.Length - 19;
         if (diff > 0)
         {
@@ -419,7 +419,7 @@ public partial struct HugeNumber
         }
         else
         {
-            var v = (decimal)value.Mantissa;
+            var v = (decimal)value.Mantissa / value.Denominator;
             for (var i = 0; i < value.Exponent; i++)
             {
                 v *= 10;
@@ -452,7 +452,7 @@ public partial struct HugeNumber
         }
         else
         {
-            return value.Mantissa * Math.Pow(10, value.Exponent);
+            return (double)value.Mantissa / value.Denominator * Math.Pow(10, value.Exponent);
         }
     }
 
@@ -476,7 +476,7 @@ public partial struct HugeNumber
         }
         else
         {
-            return (float)(value.Mantissa * Math.Pow(10, value.Exponent));
+            return (float)((double)value.Mantissa / value.Denominator * Math.Pow(10, value.Exponent));
         }
     }
 

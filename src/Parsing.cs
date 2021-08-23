@@ -192,8 +192,7 @@ public partial struct HugeNumber
             && val.StartsWith(new ReadOnlySpan<char>(new char[] { '(' })) && val.EndsWith(new ReadOnlySpan<char>(new char[] { ')' })))
         {
             isNegative = true;
-            val = val[1..];
-            val = val[0..^1];
+            val = val[1..^1];
         }
 
         if ((style & NumberStyles.AllowLeadingSign) != 0 && val.StartsWith(numberFormatInfo.NegativeSign))
@@ -235,85 +234,26 @@ public partial struct HugeNumber
 
         const NumberStyles PermittedStyles = NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowThousands;
 
-        long mantissa;
-        if ((style & NumberStyles.AllowExponent) != 0)
+        if (!TryParseValue(
+            val,
+            PermittedStyles,
+            provider,
+            numberFormatInfo,
+            isCurrency,
+            out var mantissa,
+            out var denominator,
+            out var exponent)
+            || (exponent != 0
+            && (style & NumberStyles.AllowExponent) == 0))
         {
-            var eIndex = val.IndexOfAny('e', 'E');
-            if (eIndex == -1)
-            {
-                var exponent = 0;
-
-                if (!long.TryParse(val.ToString(), PermittedStyles, provider, out mantissa))
-                {
-                    var decimalIndex = val.IndexOf(isCurrency ? numberFormatInfo.CurrencyDecimalSeparator : numberFormatInfo.NumberDecimalSeparator);
-                    if (decimalIndex == -1)
-                    {
-                        return false;
-                    }
-                    var firstPart = val.Slice(0, decimalIndex);
-                    var secondpart = val[(decimalIndex + 1)..];
-                    if (!long.TryParse(firstPart.ToString() + secondpart.ToString(), PermittedStyles, provider, out mantissa))
-                    {
-                        return false;
-                    }
-                    exponent -= secondpart.Length;
-                }
-
-                result = new HugeNumber(mantissa, exponent);
-                if (isNegative && result.IsPositive())
-                {
-                    result *= -1;
-                }
-                return true;
-            }
-            else
-            {
-                var exponent = 0;
-
-                var rest = val[(eIndex + 1)..];
-                if (rest.Length > 0 && !int.TryParse(rest.ToString(), PermittedStyles, provider, out exponent))
-                {
-                    return false;
-                }
-
-                var mantissaSlice = val.Slice(0, eIndex);
-                if (!long.TryParse(mantissaSlice.ToString(), PermittedStyles, provider, out mantissa))
-                {
-                    var decimalIndex = mantissaSlice.IndexOf(isCurrency ? numberFormatInfo.CurrencyDecimalSeparator : numberFormatInfo.NumberDecimalSeparator);
-                    if (decimalIndex == -1)
-                    {
-                        return false;
-                    }
-                    var firstPart = mantissaSlice.Slice(0, decimalIndex);
-                    var secondpart = mantissaSlice[(decimalIndex + 1)..];
-                    if (!long.TryParse(firstPart.ToString() + secondpart.ToString(), PermittedStyles, provider, out mantissa))
-                    {
-                        return false;
-                    }
-                    exponent -= secondpart.Length;
-                }
-
-                result = new HugeNumber(mantissa, exponent);
-                if (isNegative && result.IsPositive())
-                {
-                    result *= -1;
-                }
-                return true;
-            }
+            return false;
         }
-        else
+        if (isNegative && mantissa > 0)
         {
-            if (!long.TryParse(val.ToString(), PermittedStyles, provider, out mantissa))
-            {
-                return false;
-            }
-            result = new HugeNumber(mantissa);
-            if (isNegative && result > 0)
-            {
-                result *= -1;
-            }
-            return true;
+            mantissa *= -1;
         }
+        result = new HugeNumber(mantissa, denominator, exponent, true);
+        return true;
     }
 
     /// <summary>
@@ -513,4 +453,88 @@ public partial struct HugeNumber
     /// </returns>
     public static bool TryParse(string? value, out HugeNumber result)
         => TryParse(value.AsSpan(), NumberStyles.Float | NumberStyles.Any, HugeNumberFormatProvider.Instance, out result);
+
+    private static bool TryParseValue(
+        ReadOnlySpan<char> value,
+        NumberStyles permittedStyles,
+        IFormatProvider? provider,
+        NumberFormatInfo numberFormatInfo,
+        bool isCurrency,
+        out long mantissa,
+        out ushort denominator,
+        out short exponent)
+    {
+        mantissa = 0;
+        denominator = 1;
+        exponent = 0;
+
+        var vinculumIndex = value.IndexOf('/');
+        if (vinculumIndex != -1)
+        {
+            return TryParseValue(
+                value[..vinculumIndex],
+                permittedStyles,
+                provider,
+                numberFormatInfo,
+                isCurrency,
+                out mantissa,
+                out var d,
+                out exponent)
+                && d == 1
+                && ushort.TryParse(value[(vinculumIndex + 1)..], permittedStyles, provider, out denominator);
+        }
+
+        var eIndex = value.IndexOfAny('e', 'E');
+        if (eIndex != -1)
+        {
+            var exponentPart = value[(eIndex + 1)..];
+            if (exponentPart.Length == 0
+                || !short.TryParse(exponentPart, permittedStyles, provider, out exponent)
+                || !TryParseValue(
+                    value[..eIndex],
+                    permittedStyles,
+                    provider,
+                    numberFormatInfo,
+                    isCurrency,
+                    out mantissa,
+                    out var d,
+                    out var additionalExponent)
+                || d != 1)
+            {
+                return false;
+            }
+            var newExponent = exponent + additionalExponent;
+            if (newExponent is < short.MinValue or > short.MaxValue)
+            {
+                return false;
+            }
+            exponent = (short)newExponent;
+            return true;
+        }
+
+        if (long.TryParse(value, permittedStyles, provider, out mantissa))
+        {
+            return true;
+        }
+
+        var decimalIndex = value.IndexOf(isCurrency
+            ? numberFormatInfo.CurrencyDecimalSeparator
+            : numberFormatInfo.NumberDecimalSeparator);
+        if (decimalIndex == -1)
+        {
+            return false;
+        }
+
+        var firstPart = value[..decimalIndex];
+        var secondpart = value[(decimalIndex + 1)..];
+        var exp = -secondpart.Length;
+        if (exp < short.MinValue
+            || !long.TryParse(firstPart.ToString() + secondpart.ToString(), permittedStyles, provider, out mantissa))
+        {
+            return false;
+        }
+
+        exponent = (short)exp;
+        return true;
+    }
 }

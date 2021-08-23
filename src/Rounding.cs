@@ -163,6 +163,10 @@ public partial struct HugeNumber
     /// If <paramref name="value"/> is <see cref="PositiveInfinity"/> or <see cref="NegativeInfinity"/>,
     /// the method returns <see cref="PositiveInfinity"/> or <see cref="NegativeInfinity"/>, respectively.
     /// </para>
+    /// <para>
+    /// If <paramref name="value"/> is a rational fraction, it is first converted to a decimal
+    /// representation before rounding.
+    /// </para>
     /// </remarks>
     public static HugeNumber Round(HugeNumber value, int digits, MidpointRounding mode)
     {
@@ -185,6 +189,10 @@ public partial struct HugeNumber
             return value;
         }
 
+        if (value.Denominator > 1)
+        {
+            value = ToDenominator(value, 1);
+        }
         if (value.Exponent < -digits)
         {
             var mantissa = value.Mantissa;
@@ -282,7 +290,8 @@ public partial struct HugeNumber
     public static HugeNumber Round<TInteger>(HugeNumber value, TInteger digits, MidpointRounding mode)
         where TInteger : IBinaryInteger<TInteger>
     {
-        if (digits is < 0 or > 18)
+        var eightteen = TInteger.Create(18);
+        if (digits < TInteger.Zero || digits > eightteen)
         {
             throw new ArgumentOutOfRangeException(
                 nameof(digits),
@@ -769,7 +778,23 @@ public partial struct HugeNumber
     /// </summary>
     /// <param name="value">A value to round.</param>
     /// <returns>The integral component of the given <paramref name="value"/>.</returns>
-    public static HugeNumber Truncate(HugeNumber value) => value.Exponent < 0 ? value.Mantissa : value;
+    public static HugeNumber Truncate(HugeNumber value)
+    {
+        if (value.Exponent < -value.MantissaDigits)
+        {
+            return Zero;
+        }
+        if (value.Exponent < 0)
+        {
+            var result = value.Mantissa;
+            for (var i = 0; i < -value.Exponent; i++)
+            {
+                result /= 10;
+            }
+            return result;
+        }
+        return value;
+    }
 
     /// <summary>
     /// Gets the integral component of this instance.

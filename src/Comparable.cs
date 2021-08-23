@@ -403,7 +403,7 @@ public partial struct HugeNumber
         }
 
         // account for comparisons involving negative exponents
-        if (Exponent < 0)
+        if (Exponent < -MantissaDigits)
         {
             return -1;
         }
@@ -524,6 +524,27 @@ public partial struct HugeNumber
         {
             return 1;
         }
+
+        // simple cases with opposite signs
+        if (Mantissa < 0 && other.Mantissa > 0)
+        {
+            return -1;
+        }
+        if (other.Mantissa < 0 && Mantissa > 0)
+        {
+            return 1;
+        }
+
+        // When either value is zero, exponents can be disregarded; only the sign of the
+        // mantissa matters for the purpose of comparison.
+        if (Mantissa == 0 || other.Mantissa == 0)
+        {
+            var r = Mantissa.CompareTo(other.Mantissa);
+            return r == 0
+                ? Exponent.CompareTo(other.Exponent) // permit comparing 0 to -0
+                : r;
+        }
+
         if (IsPositiveInfinity())
         {
             return other.IsPositiveInfinity() ? 0 : 1;
@@ -541,50 +562,42 @@ public partial struct HugeNumber
             return 1;
         }
 
-        // When either value is zero, exponents can be disregarded; only the sign of the
-        // mantissa matters for the purpose of comparison.
-        if (Mantissa == 0 || other.Mantissa == 0)
+        // make the denominators agree (or remove them)
+        // afterward they can be ignored
+        var value = this;
+        if ((Denominator > 1 || other.Denominator > 1)
+            && Denominator != other.Denominator)
         {
-            return Mantissa.CompareTo(other.Mantissa);
+            other = ToDenominator(other, Denominator);
+            if (Denominator != other.Denominator)
+            {
+                value = ToDenominator(value, 1);
+            }
         }
 
-        var adjustedExponent = Exponent + (MantissaDigits - 1);
+        var adjustedExponent = value.Exponent + (value.MantissaDigits - 1);
         var otherAdjustedExponent = other.Exponent + (other.MantissaDigits - 1);
 
-        // simple comparison between equal exponents
+        // comparison between equal exponents
         if (adjustedExponent == otherAdjustedExponent)
         {
-            var adjustedMantissa = Mantissa * Math.Pow(10, Exponent);
-            var otherAdjustedMantissa = other.Mantissa * Math.Pow(10, other.Exponent);
-            return adjustedMantissa.CompareTo(otherAdjustedMantissa);
+            return value.Mantissa.CompareTo(other.Mantissa);
         }
 
-        // simple cases with opposite signs
-        if (Mantissa < 0 && other.Mantissa > 0)
-        {
-            return -1;
-        }
-        if (other.Mantissa < 0 && Mantissa > 0)
-        {
-            return 1;
-        }
-
-        // account for comparisons involving negative exponents
+        // comparison of exponents covers all other cases (mantissa comparison is
+        // irrelevant when there is a difference in magnitude)
         if (adjustedExponent < 0)
         {
             if (otherAdjustedExponent < 0)
             {
                 return adjustedExponent.CompareTo(otherAdjustedExponent);
             }
-            return IsPositive() ? -1 : 1;
+            return value.Mantissa > 0 ? -1 : 1;
         }
         if (otherAdjustedExponent < 0)
         {
-            return IsPositive() ? 1 : -1;
+            return value.Mantissa > 0 ? 1 : -1;
         }
-
-        // direct comparison of exponents covers all other cases (mantissa comparison is
-        // irrelevant when there is a difference in magnitude)
         return adjustedExponent.CompareTo(otherAdjustedExponent) * (IsNegative() ? -1 : 1);
     }
 
@@ -648,7 +661,7 @@ public partial struct HugeNumber
             return -1;
         }
 
-        // in non-trivial cases, convert the other value to a Number, then compare
+        // in non-trivial cases convert the other value, then compare
         return CompareTo((HugeNumber)other);
     }
 
@@ -788,7 +801,9 @@ public partial struct HugeNumber
         {
             return false;
         }
-        return Exponent == 0 && Mantissa == other;
+        return Mantissa == other
+            && Denominator == 1
+            && Exponent == 0;
     }
 
     /// <summary>Indicates whether the current object is equal to another object.</summary>
@@ -801,33 +816,18 @@ public partial struct HugeNumber
         {
             return false;
         }
-        if (other == 0)
-        {
-            return Mantissa == 0;
-        }
-        return Equals((HugeNumber)other);
+        return Mantissa == other
+            && Denominator == 1
+            && Exponent == 0;
     }
 
     /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
     /// <param name="other">An object to compare with this object.</param>
     /// <returns><see langword="true"/> if the current object is equal to the <paramref
     /// name="other">other</paramref> parameter; otherwise, <see langword="false"/>.</returns>
-    public bool Equals(HugeNumber other)
-    {
-        if (IsNaN() || other.IsNaN())
-        {
-            return false;
-        }
-        if (IsNegativeInfinity())
-        {
-            return other.IsNegativeInfinity();
-        }
-        if (IsPositiveInfinity())
-        {
-            return other.IsPositiveInfinity();
-        }
-        return Mantissa == other.Mantissa && Exponent == other.Exponent;
-    }
+    public bool Equals(HugeNumber other) => !IsNaN()
+        && !other.IsNaN()
+        && Mantissa == other.Mantissa && Denominator == other.Denominator && Exponent == other.Exponent;
 
     /// <summary>Indicates whether the current object is equal to another object.</summary>
     /// <param name="other">An object to compare with this object.</param>
@@ -921,8 +921,7 @@ public partial struct HugeNumber
 
     /// <summary>Returns the hash code for this instance.</summary>
     /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-    public override int GetHashCode()
-        => (Exponent, IsNaN(), IsNegativeInfinity(), IsPositiveInfinity(), Mantissa).GetHashCode();
+    public override int GetHashCode() => HashCode.Combine(Mantissa, Denominator, Exponent);
 
     /// <summary>
     /// Returns a value that indicates whether a <see cref="decimal"/> value and an <see

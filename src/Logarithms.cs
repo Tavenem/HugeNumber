@@ -5,6 +5,179 @@ namespace Tavenem.HugeNumbers;
 public partial struct HugeNumber
 {
     /// <summary>
+    /// Returns the base 2 integer logarithm of a specified number.
+    /// </summary>
+    /// <param name="x">The number whose logarithm is to be found.</param>
+    /// <returns>
+    /// <para>
+    /// One of the values in the following table.
+    /// </para>
+    /// <list type="table">
+    /// <listheader>
+    /// <term><paramref name="x"/> parameter</term>
+    /// <term>Return value</term>
+    /// </listheader>
+    /// <item>
+    /// <term>Positive</term>
+    /// <term>
+    /// The base 2 integer log of <paramref name="x"/>; that is, (<typeparamref name="TInteger"/>)log2(<paramref name="x"/>).
+    /// </term>
+    /// </item>
+    /// <item>
+    /// <term>Zero</term>
+    /// <term>The minimum value of <typeparamref name="TInteger"/></term>
+    /// </item>
+    /// <item>
+    /// <term>Equal to <see cref="NaN"/> or <see cref="PositiveInfinity"/> or <see cref="NegativeInfinity"/></term>
+    /// <term>The maximum value of <typeparamref name="TInteger"/></term>
+    /// </item>
+    /// </list>
+    /// </returns>
+    public static TInteger ILogB<TInteger>(HugeNumber x)
+        where TInteger : IBinaryInteger<TInteger>
+    {
+        if (x.Mantissa == 0)
+        {
+            if (typeof(TInteger) == typeof(byte))
+            {
+                return (TInteger)(object)byte.MinValue;
+            }
+            else if (typeof(TInteger) == typeof(short))
+            {
+                return (TInteger)(object)short.MinValue;
+            }
+            else if (typeof(TInteger) == typeof(int))
+            {
+                return (TInteger)(object)int.MinValue;
+            }
+            else if (typeof(TInteger) == typeof(long))
+            {
+                return (TInteger)(object)long.MinValue;
+            }
+            else if (typeof(TInteger) == typeof(nint))
+            {
+                return (TInteger)(object)nint.MinValue;
+            }
+            else if (typeof(TInteger) == typeof(sbyte))
+            {
+                return (TInteger)(object)sbyte.MinValue;
+            }
+            else if (typeof(TInteger) == typeof(ushort))
+            {
+                return (TInteger)(object)ushort.MinValue;
+            }
+            else if (typeof(TInteger) == typeof(uint))
+            {
+                return (TInteger)(object)uint.MinValue;
+            }
+            else if (typeof(TInteger) == typeof(ulong))
+            {
+                return (TInteger)(object)ulong.MinValue;
+            }
+            else if (typeof(TInteger) == typeof(nuint))
+            {
+                return (TInteger)(object)nuint.MinValue;
+            }
+            else
+            {
+                throw new NotSupportedException($"Type {typeof(TInteger).Name} is unsupported.");
+            }
+        }
+        if (x.IsNaN() || x.IsInfinity())
+        {
+            if (typeof(TInteger) == typeof(byte))
+            {
+                return (TInteger)(object)byte.MaxValue;
+            }
+            else if (typeof(TInteger) == typeof(short))
+            {
+                return (TInteger)(object)short.MaxValue;
+            }
+            else if (typeof(TInteger) == typeof(int))
+            {
+                return (TInteger)(object)int.MaxValue;
+            }
+            else if (typeof(TInteger) == typeof(long))
+            {
+                return (TInteger)(object)long.MaxValue;
+            }
+            else if (typeof(TInteger) == typeof(nint))
+            {
+                return (TInteger)(object)nint.MaxValue;
+            }
+            else if (typeof(TInteger) == typeof(sbyte))
+            {
+                return (TInteger)(object)sbyte.MaxValue;
+            }
+            else if (typeof(TInteger) == typeof(ushort))
+            {
+                return (TInteger)(object)ushort.MaxValue;
+            }
+            else if (typeof(TInteger) == typeof(uint))
+            {
+                return (TInteger)(object)uint.MaxValue;
+            }
+            else if (typeof(TInteger) == typeof(ulong))
+            {
+                return (TInteger)(object)ulong.MaxValue;
+            }
+            else if (typeof(TInteger) == typeof(nuint))
+            {
+                return (TInteger)(object)nuint.MaxValue;
+            }
+            else
+            {
+                throw new NotSupportedException($"Type {typeof(TInteger).Name} is unsupported.");
+            }
+        }
+        var value = Math.ILogB((double)x);
+        if (typeof(TInteger) == typeof(byte))
+        {
+            return (TInteger)(object)value;
+        }
+        else if (typeof(TInteger) == typeof(short))
+        {
+            return (TInteger)(object)value;
+        }
+        else if (typeof(TInteger) == typeof(int))
+        {
+            return (TInteger)(object)value;
+        }
+        else if (typeof(TInteger) == typeof(long))
+        {
+            return (TInteger)(object)value;
+        }
+        else if (typeof(TInteger) == typeof(nint))
+        {
+            return (TInteger)(object)value;
+        }
+        else if (typeof(TInteger) == typeof(sbyte))
+        {
+            return (TInteger)(object)value;
+        }
+        else if (typeof(TInteger) == typeof(ushort))
+        {
+            return (TInteger)(object)value;
+        }
+        else if (typeof(TInteger) == typeof(uint))
+        {
+            return (TInteger)(object)value;
+        }
+        else if (typeof(TInteger) == typeof(ulong))
+        {
+            return (TInteger)(object)value;
+        }
+        else if (typeof(TInteger) == typeof(nuint))
+        {
+            return (TInteger)(object)value;
+        }
+        else
+        {
+            throw new NotSupportedException($"Type {typeof(TInteger).Name} is unsupported.");
+        }
+    }
+
+    /// <summary>
     /// Returns the natural (base e) logarithm of a specified number.
     /// </summary>
     /// <param name="value">The number whose logarithm is to be found.</param>
@@ -72,7 +245,8 @@ public partial struct HugeNumber
         {
             return PositiveInfinity;
         }
-        else if (value.Exponent >= 0
+        value = ToDenominator(value, 1);
+        if (value.Exponent >= 0
             && long.MaxValue - value.MantissaDigits + 1 < value.Exponent)
         {
             return PositiveInfinity;
@@ -115,7 +289,7 @@ public partial struct HugeNumber
                 newResult = 2 * total;
                 k++;
             } while (!double.IsInfinity(newResult) && !newResult.IsNearlyEqualTo(result) && k < int.MaxValue);
-            return (exponent * Ln10) + newResult;
+            return (exponent * HugeNumberConstants.Ln10) + newResult;
         }
     }
 
@@ -355,7 +529,7 @@ public partial struct HugeNumber
         }
         else
         {
-            return Log(value) / Ln2;
+            return Log(value) / HugeNumberConstants.Ln2;
         }
     }
 
@@ -475,7 +649,7 @@ public partial struct HugeNumber
         }
         else
         {
-            return Log(value) / Ln10;
+            return Log(value) / HugeNumberConstants.Ln10;
         }
     }
 

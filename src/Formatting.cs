@@ -21,26 +21,35 @@ public partial struct HugeNumber
                 {
                     return "-∞";
                 }
-                else
-                {
-                    return "∞";
-                }
+                return "∞";
             }
             else if (Mantissa == 0)
             {
+                if (Exponent < 0)
+                {
+                    return "-0";
+                }
                 return "0";
             }
             else if (Exponent == 0)
             {
-                return Mantissa.ToString(CultureInfo.InvariantCulture);
+                if (Denominator == 1)
+                {
+                    return Mantissa.ToString("N0", CultureInfo.InvariantCulture);
+                }
+                return $"{Mantissa.ToString("N0", CultureInfo.InvariantCulture)}/{Denominator.ToString("N0", CultureInfo.InvariantCulture)}";
             }
-            else if (MantissaDigits == 1)
+            else if (MantissaDigits == 1 && Denominator == 1)
             {
-                return $"{Mantissa}e{Exponent}";
+                return $"{Mantissa.ToString("N0", CultureInfo.InvariantCulture)}e{Exponent.ToString("N0", CultureInfo.InvariantCulture)}";
+            }
+            else if (Denominator == 1)
+            {
+                return $"{Mantissa / Math.Pow(10, MantissaDigits - 1)}e{Exponent + (MantissaDigits - 1)}";
             }
             else
             {
-                return $"{Mantissa / Math.Pow(10, MantissaDigits - 1)}e{Exponent + (MantissaDigits - 1)}";
+                return $"{Mantissa.ToString("N0", CultureInfo.InvariantCulture)}e{Exponent.ToString("N0", CultureInfo.InvariantCulture)}/{Denominator.ToString("N0", CultureInfo.InvariantCulture)}";
             }
         }
     }

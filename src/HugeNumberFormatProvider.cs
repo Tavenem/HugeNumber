@@ -148,8 +148,17 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
         int[] groupSizes,
         string decimalSeparator,
         bool alwaysPositiveExponent,
+        bool isCurrency,
         HugeNumber number)
     {
+        // Condensed and currency formats do not display rational fractions, and are always
+        // converted to a decimal representation.
+        if ((condense || isCurrency)
+            && number.Denominator > 1)
+        {
+            number = HugeNumber.ToDenominator(number, 1);
+        }
+
         var mantissa = number.Mantissa;
         int exponent = number.Exponent;
 
@@ -383,7 +392,8 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
             }
             exponent = 0;
         }
-        else if (precision.HasValue)
+        else if (number.Denominator == 1
+            && precision.HasValue)
         {
             mantissaSpan = condense
                 ? rawMantissaSpan
@@ -402,7 +412,7 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
 
         var exponentString = exponent.ToString("d");
 
-        if (precision.HasValue)
+        if (precision.HasValue && number.Denominator == 1)
         {
             if (mantissaSpan.IndexOf(decimalSeparator) != -1)
             {
@@ -413,10 +423,16 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
                     builder.Append('0', precision.Value - precisionLength);
                 }
             }
-            else if (precision.Value - exponentString.Length - mantissaSpan.Length > 0)
+            else
             {
-                builder.Append(decimalSeparator);
-                builder.Append('0', precision.Value - exponentString.Length - mantissaSpan.Length);
+                var exponentStringLength = exponent == 0
+                    ? 0
+                    : exponentString.Length;
+                if (precision.Value - exponentStringLength - mantissaSpan.Length > 0)
+                {
+                    builder.Append(decimalSeparator);
+                    builder.Append('0', precision.Value - exponentStringLength - mantissaSpan.Length);
+                }
             }
         }
 
@@ -430,6 +446,12 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
             }
 
             builder.Append(exponentString);
+        }
+
+        if (number.Denominator > 1)
+        {
+            builder.Append('/')
+                .Append(number.Denominator);
         }
     }
 
@@ -503,74 +525,74 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
                     {
                         case 0:
                             sb.Append('(').Append(provider.CurrencySymbol);
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             sb.Append(')');
                             break;
                         case 1:
                             sb.Append(provider.NegativeSign).Append(provider.CurrencySymbol);
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             break;
                         case 2:
                             sb.Append(provider.CurrencySymbol).Append(provider.NegativeSign);
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             break;
                         case 3:
                             sb.Append(provider.CurrencySymbol);
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             sb.Append(provider.NegativeSign);
                             break;
                         case 4:
                             sb.Append('(');
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             sb.Append(provider.CurrencySymbol).Append(')');
                             break;
                         case 5:
                             sb.Append(provider.NegativeSign);
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             sb.Append(provider.CurrencySymbol);
                             break;
                         case 6:
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             sb.Append(provider.NegativeSign).Append(provider.CurrencySymbol);
                             break;
                         case 7:
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             sb.Append(provider.CurrencySymbol).Append(provider.NegativeSign);
                             break;
                         case 8:
                             sb.Append(provider.NegativeSign);
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             sb.Append(' ').Append(provider.CurrencySymbol);
                             break;
                         case 9:
                             sb.Append(provider.NegativeSign).Append(provider.CurrencySymbol).Append(' ');
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             break;
                         case 10:
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             sb.Append(' ').Append(provider.CurrencySymbol).Append(provider.NegativeSign);
                             break;
                         case 11:
                             sb.Append(provider.CurrencySymbol).Append(' ');
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             sb.Append(provider.NegativeSign);
                             break;
                         case 12:
                             sb.Append(provider.CurrencySymbol).Append(' ').Append(provider.NegativeSign);
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             break;
                         case 13:
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             sb.Append(provider.NegativeSign).Append(' ').Append(provider.CurrencySymbol);
                             break;
                         case 14:
                             sb.Append('(').Append(provider.CurrencySymbol).Append(' ');
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             sb.Append(')');
                             break;
                         case 15:
                             sb.Append('(');
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             sb.Append(' ').Append(provider.CurrencySymbol).Append(')');
                             break;
                     }
@@ -581,18 +603,18 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
                     {
                         case 0:
                             sb.Append(provider.CurrencySymbol);
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             break;
                         case 1:
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             sb.Append(provider.CurrencySymbol);
                             break;
                         case 2:
                             sb.Append(provider.CurrencySymbol).Append(' ');
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             break;
                         case 3:
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.CurrencyGroupSeparator, provider.CurrencyGroupSizes, provider.CurrencyDecimalSeparator, false, true, number);
                             sb.Append(' ').Append(provider.CurrencySymbol);
                             break;
                     }
@@ -606,7 +628,7 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
                     number = -number;
                     sb.Append(provider.NegativeSign);
                 }
-                Format(sb, provider, capitalize, false, false, precision, false, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, false, number);
+                Format(sb, provider, capitalize, false, false, precision, false, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, false, false, number);
                 break;
             case "e":
                 if (number.IsNegative())
@@ -614,7 +636,7 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
                     number = -number;
                     sb.Append(provider.NegativeSign);
                 }
-                Format(sb, provider, capitalize, true, false, precision, false, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, true, number);
+                Format(sb, provider, capitalize, true, false, precision, false, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, true, false, number);
                 break;
             case "n":
                 if (number.IsNegative())
@@ -624,30 +646,30 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
                     {
                         case 0:
                             sb.Append('(');
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, false, false, number);
                             sb.Append(')');
                             break;
                         case 1:
                             sb.Append(provider.NegativeSign);
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, false, false, number);
                             break;
                         case 2:
                             sb.Append(provider.NegativeSign).Append(' ');
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, false, false, number);
                             break;
                         case 3:
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, false, false, number);
                             sb.Append(provider.NegativeSign);
                             break;
                         case 4:
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, false, false, number);
                             sb.Append(' ').Append(provider.NegativeSign);
                             break;
                     }
                 }
                 else
                 {
-                    Format(sb, provider, capitalize, false, false, precision, true, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, false, number);
+                    Format(sb, provider, capitalize, false, false, precision, true, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, false, false, number);
                 }
                 break;
             case "p":
@@ -658,54 +680,54 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
                     {
                         case 0:
                             sb.Append(provider.NegativeSign);
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, false, number);
                             sb.Append(' ').Append(provider.PercentSymbol);
                             break;
                         case 1:
                             sb.Append(provider.NegativeSign);
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, false, number);
                             sb.Append(provider.PercentSymbol);
                             break;
                         case 2:
                             sb.Append(provider.NegativeSign).Append(provider.PercentSymbol);
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, false, number);
                             break;
                         case 3:
                             sb.Append(provider.PercentSymbol).Append(provider.NegativeSign);
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, false, number);
                             break;
                         case 4:
                             sb.Append(provider.PercentSymbol);
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, false, number);
                             sb.Append(provider.NegativeSign);
                             break;
                         case 5:
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, false, number);
                             sb.Append(provider.NegativeSign).Append(provider.PercentSymbol);
                             break;
                         case 6:
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, false, number);
                             sb.Append(provider.PercentSymbol).Append(provider.NegativeSign);
                             break;
                         case 7:
                             sb.Append(provider.NegativeSign).Append(provider.PercentSymbol).Append(' ');
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, false, number);
                             break;
                         case 8:
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, false, number);
                             sb.Append(' ').Append(provider.PercentSymbol).Append(provider.NegativeSign);
                             break;
                         case 9:
                             sb.Append(provider.PercentSymbol).Append(' ');
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, false, number);
                             sb.Append(provider.NegativeSign);
                             break;
                         case 10:
                             sb.Append(provider.PercentSymbol).Append(' ').Append(provider.NegativeSign);
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, false, number);
                             break;
                         case 11:
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, false, number);
                             sb.Append(provider.NegativeSign).Append(' ').Append(provider.PercentSymbol);
                             break;
                     }
@@ -715,20 +737,20 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
                     switch (provider.PercentPositivePattern)
                     {
                         case 0:
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, false, number);
                             sb.Append(' ').Append(provider.PercentSymbol);
                             break;
                         case 1:
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, false, number);
                             sb.Append(provider.PercentSymbol);
                             break;
                         case 2:
                             sb.Append(provider.PercentSymbol);
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, false, number);
                             break;
                         case 3:
                             sb.Append(provider.PercentSymbol).Append(' ');
-                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, number);
+                            Format(sb, provider, capitalize, false, false, precision, true, provider.PercentGroupSeparator, provider.PercentGroupSizes, provider.PercentDecimalSeparator, false, false, number);
                             break;
                     }
                 }
@@ -739,7 +761,7 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
                     number = -number;
                     sb.Append(provider.NegativeSign);
                 }
-                Format(sb, provider, capitalize, false, true, precision, false, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, false, number);
+                Format(sb, provider, capitalize, false, true, precision, false, provider.NumberGroupSeparator, provider.NumberGroupSizes, provider.NumberDecimalSeparator, false, false, number);
                 break;
         }
 

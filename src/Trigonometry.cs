@@ -1,4 +1,6 @@
-﻿namespace Tavenem.HugeNumbers;
+﻿using Tavenem.Mathematics;
+
+namespace Tavenem.HugeNumbers;
 
 public partial struct HugeNumber
 {
@@ -224,11 +226,11 @@ public partial struct HugeNumber
         }
         if (value.IsNegativeInfinity())
         {
-            return -HalfPi;
+            return -HugeNumberConstants.HalfPi;
         }
         if (value.IsPositiveInfinity())
         {
-            return HalfPi;
+            return HugeNumberConstants.HalfPi;
         }
         if (value < 0)
         {
@@ -236,11 +238,15 @@ public partial struct HugeNumber
         }
         if (value > 1)
         {
-            return HalfPi - Atan(1 / value);
+            return HugeNumberConstants.HalfPi - Atan(1 / value);
+        }
+        if (value == One)
+        {
+            return HugeNumberConstants.QuarterPi;
         }
         if (value > _TwoMinusRoot3)
         {
-            return SixthPi + Atan(((_Root3 * value) - 1) / (_Root3 + value));
+            return HugeNumberConstants.SixthPi + Atan(((_Root3 * value) - 1) / (_Root3 + value));
         }
 
         var subtract = true;
@@ -374,17 +380,17 @@ public partial struct HugeNumber
         }
         if (y.Mantissa == 0)
         {
-            return x >= 0 ? HalfPi : -HalfPi;
+            return x >= 0 ? HugeNumberConstants.HalfPi : -HugeNumberConstants.HalfPi;
         }
         if (y.IsPositiveInfinity())
         {
             if (x.IsPositiveInfinity())
             {
-                return QuarterPi;
+                return HugeNumberConstants.QuarterPi;
             }
             else if (x.IsNegativeInfinity())
             {
-                return -QuarterPi;
+                return -HugeNumberConstants.QuarterPi;
             }
             else
             {
@@ -395,11 +401,11 @@ public partial struct HugeNumber
         {
             if (x.IsPositiveInfinity())
             {
-                return ThreeQuartersPi;
+                return HugeNumberConstants.ThreeQuartersPi;
             }
             else if (x.IsNegativeInfinity())
             {
-                return -ThreeQuartersPi;
+                return -HugeNumberConstants.ThreeQuartersPi;
             }
             else if (x >= 0)
             {
@@ -412,11 +418,11 @@ public partial struct HugeNumber
         }
         if (x.IsPositiveInfinity())
         {
-            return HalfPi;
+            return HugeNumberConstants.HalfPi;
         }
         if (x.IsNegativeInfinity())
         {
-            return -HalfPi;
+            return -HugeNumberConstants.HalfPi;
         }
         if (x > 0)
         {
@@ -509,25 +515,25 @@ public partial struct HugeNumber
         {
             return Cos(-value);
         }
-        if (value > TwoPi)
+        if (value > HugeNumberConstants.TwoPi)
         {
-            return Cos(value - (TwoPi * (value / TwoPi).Floor()));
+            return Cos(value - (HugeNumberConstants.TwoPi * (value / HugeNumberConstants.TwoPi).Floor()));
         }
-        if (value > ThreeHalvesPi)
+        if (value > HugeNumberConstants.ThreeHalvesPi)
         {
-            return Cos(TwoPi - value);
+            return Cos(HugeNumberConstants.TwoPi - value);
         }
         if (value > Pi)
         {
             return -Cos(value - Pi);
         }
-        if (value > HalfPi)
+        if (value > HugeNumberConstants.HalfPi)
         {
             return -Cos(Pi - value);
         }
-        if (value > QuarterPi)
+        if (value > HugeNumberConstants.QuarterPi)
         {
-            return Sin(HalfPi - value);
+            return Sin(HugeNumberConstants.HalfPi - value);
         }
 
         var subtract = true;
@@ -622,25 +628,25 @@ public partial struct HugeNumber
         {
             return -Sin(-value);
         }
-        if (value > TwoPi)
+        if (value > HugeNumberConstants.TwoPi)
         {
-            return Sin(value - (TwoPi * (value / TwoPi).Floor()));
+            return Sin(value - (HugeNumberConstants.TwoPi * (value / HugeNumberConstants.TwoPi).Floor()));
         }
-        if (value > ThreeHalvesPi)
+        if (value > HugeNumberConstants.ThreeHalvesPi)
         {
-            return -Sin(TwoPi - value);
+            return -Sin(HugeNumberConstants.TwoPi - value);
         }
         if (value > Pi)
         {
             return -Sin(value - Pi);
         }
-        if (value > HalfPi)
+        if (value > HugeNumberConstants.HalfPi)
         {
             return Sin(Pi - value);
         }
-        if (value > QuarterPi)
+        if (value > HugeNumberConstants.QuarterPi)
         {
-            return Cos(HalfPi - value);
+            return Cos(HugeNumberConstants.HalfPi - value);
         }
 
         var subtract = true;
@@ -736,19 +742,19 @@ public partial struct HugeNumber
         {
             return Tan(value - (Pi * (value / Pi).Floor()));
         }
-        if (value > ThreeQuartersPi)
+        if (value > HugeNumberConstants.ThreeQuartersPi)
         {
             return 1 / -Tan(Pi - value);
         }
-        if (value > HalfPi)
+        if (value > HugeNumberConstants.HalfPi)
         {
             return -Tan(Pi - value);
         }
-        if (value > QuarterPi)
+        if (value > HugeNumberConstants.QuarterPi)
         {
-            return 1 / Tan(HalfPi - value);
+            return 1 / Tan(HugeNumberConstants.HalfPi - value);
         }
-        if (value > EighthPi)
+        if (value > HugeNumberConstants.EighthPi)
         {
             var tanHalf = Tan(value / 2);
             return 2 * tanHalf / (1 - (tanHalf * tanHalf));

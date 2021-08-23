@@ -1,8 +1,12 @@
 # Changelog
 
 ## 2.0.0-preview.3
+### Added
+- Implement rational fraction support
+### Changed
+- Move most non-standard constants to `HugeNumberConstants` static class in `Tavenem.Mathematics` namespace
 ### Removed
-- Removed support for non-JSON serialization
+- Remove support for non-JSON serialization
 
 ## 2.0.0-preview.2
 ### Changed

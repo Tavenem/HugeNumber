@@ -4,11 +4,45 @@ namespace Tavenem.HugeNumbers;
 
 /// <summary>
 /// <para>
-/// Allows efficient recording of values in the range ±999999999999999999e±32767. Also allows
-/// representing positive or negative infinity, and NaN (not-a-number).
+/// Allows efficient recording of values in the range ±999999999999999999e±32767, as well as
+/// rational fractions such as ⅓. Also allows representing positive or negative infinity, and
+/// <see cref="NaN"/> (not a number).
+/// </para>
+/// <para>
+/// Note: the parameterless constructor returns <see cref="NaN"/> (not zero, as might be expected).
+/// To obtain zero, use the static propety <see cref="Zero"/>.
 /// </para>
 /// </summary>
 /// <remarks>
+/// <para>
+/// <b>Rational Fractions</b>
+/// </para>
+/// <para>
+/// Rational fractions cannot be constructed directly. All constructors accept a mantissa, or a
+/// mantissa and an exponent. Conversions from floating point types always result in a floating
+/// point value. Even an apparently simple value such as 1.5 is assumed to be irrational, since the
+/// binary representation of decimal values can often be irrational, and therefore no assumptions
+/// are made.
+/// </para>
+/// <para>
+/// In order to represent a rational fraction with a HugeNumber, first construct (or cast) an
+/// integral value as a HugeNumber, then perform a division operation with another integral value.
+/// Mathematical operations between two rational fractions, or between a rational fraction and an
+/// integral value, will also result in another rational fraction (unless the result is too large).
+/// For example: <c>new HugeNumber(2) / 3</c> will result in the rational fraction 2/3 (i.e.
+/// <i>not</i> an approximation such as 0.6666...).
+/// </para>
+/// <para>
+/// Rational fractions can have a denominator no larger than <see cref="ushort.MaxValue"/>. Smaller
+/// fractional values are represented as a mantissa and negative exponent (with a denominator of 1).
+/// </para>
+/// <para>
+/// Rational fractions may also have exponents (positive or negative). The smallest HugeNumber
+/// greater than zero (<see cref="Epsilon"/>) is therefore (1/65535)e-32767.
+/// </para>
+/// <para>
+/// <b>Precision</b>
+/// </para>
 /// <para>
 /// Values have at most 18 significant digits in the mantissa, and 5 in the exponent. These limits
 /// are fixed independently of one another; they do not trade off, as with the standard
@@ -16,27 +50,35 @@ namespace Tavenem.HugeNumbers;
 /// thereby gain 22 in the exponent.
 /// </para>
 /// <para>
-/// Despite the ability to record floating-point values, HugeNumber values are internally stored
-/// as integral pairs of mantissa and exponent. Therefore, arithmatic operations between
-/// HugeNumber values which represent integers are not subject to floating point errors. For
-/// example, <c>new HugeNumber(5) * 2 / 2 == 5</c> is always <see langword="true"/>. This also
-/// applies to rational floating point values: <code>new HugeNumber(10) / 4 == new Number (100) /
+/// HugeNumber values are internally stored as integral pairs of mantissa and exponent. Therefore,
+/// arithmatic operations between HugeNumber values which represent integers are not subject to
+/// floating point errors. For example, <c>new HugeNumber(5) * 2 / 2 == 5</c> is always
+/// <see langword="true"/>.
+/// </para>
+/// <para>
+/// This also applies to rational fractions: <code>new HugeNumber(10) / 4 == new Number (100) /
 /// 40</code> is also guaranteed to be <see langword="true"/>.
 /// </para>
 /// <para>
-/// Note that imprecision is still possible when performing arithmatic operations or comparisons
-/// between <i>irrational</i> floating point values, or when converting to and from non-Number
-/// floating point types such as <see cref="float"/> and <see cref="double"/>. For example,
-/// <c>new HugeNumber(1) / new HugeNumber(3) == 1.0 / 3.0</c> is <i>not</i> guaranteed to be <see
-/// langword="true"/>, nor is <code>new HugeNumber(2) / new HugeNumber (6) / 2 == new HugeNumber(1)
-/// / new HugeNumber(3)</code>. These <i>may</i> evaluate to <see langword="true"/>, but this is
-/// not guaranteed. The usual caveats and safeguards typically employed when performing floating
-/// point math and/or comparisons should be applied to HugeNumber instances which represent
-/// irrational values, or have been converted from a non-HugeNumber floating point value.
+/// It also applies to rational floating point values too large to be represented as fractions:
+/// <c>new HugeNumber(1, -20) / 4 == new Number (1, -19) / 40</c> is also guaranteed to be
+/// <see langword="true"/>.
+/// </para>
+/// <para>
+/// Note that floating point errors are still possible when performing arithmatic operations or
+/// comparisons between <i>irrational</i> floating point values, or fractional values too large or
+/// small, or with too many significant digits, to be represented as rational fractions. For
+/// example, <c>new HugeNumber(2).Sqrt().Square() == 2</c> is <i>not</i> guaranteed to be <see
+/// langword="true"/>. It <i>may</i> evaluate to <see langword="true"/>, but this is not
+/// guaranteed. The usual caveats and safeguards typically employed when performing floating
+/// point math and/or comparisons should be applied to HugeNumber instances which do not represent
+/// integral values or rational fractions. The method <see cref="IsNotRational(HugeNumber)"/> can
+/// be used to determine whether a number is not integral or a rational fraction, in order to
+/// determine if such safeguards are required.
 /// </para>
 /// </remarks>
 [JsonConverter(typeof(HugeNumberConverter))]
-readonly public partial struct HugeNumber :
+public readonly partial struct HugeNumber :
     IAdditionOperators<HugeNumber, decimal, HugeNumber>,
     IAdditionOperators<HugeNumber, double, HugeNumber>,
     IAdditionOperators<HugeNumber, long, HugeNumber>,
@@ -85,8 +127,22 @@ readonly public partial struct HugeNumber :
     private const short MIN_EXPONENT = short.MinValue;
     private const long MAX_MANTISSA = 999999999999999999;
     private const long MIN_MANTISSA = -999999999999999999;
-    private const long POSITIVE_INFINITE_MANTISSA = 1000000000000000000;
-    private const long NEGATIVE_INFINITE_MANTISSA = -1000000000000000000;
+
+    /// <summary>
+    /// <para>
+    /// When this <see cref="HugeNumber"/> represents a rational fraction, this value indicates the
+    /// denominator of that fraction.
+    /// </para>
+    /// <para>
+    /// When this <see cref="HugeNumber"/> represents a whole or irrational number, this value will
+    /// be one.
+    /// </para>
+    /// <para>
+    /// When this <see cref="HugeNumber"/> represents positive or negative infinity, or
+    /// <see cref="NaN"/> (not a number), this value will be zero.
+    /// </para>
+    /// </summary>
+    public ushort Denominator { get; }
 
     /// <summary>
     /// The power of ten by which the <see cref="Mantissa"/> is multiplied to determine the
@@ -95,8 +151,15 @@ readonly public partial struct HugeNumber :
     public short Exponent { get; }
 
     /// <summary>
-    /// The value which is multiplied by ten times the <see cref="Exponent"/> to determine the
-    /// value of this <see cref="HugeNumber"/>.
+    /// <para>
+    /// When this <see cref="HugeNumber"/> represents a rational fraction, this is the numerator of
+    /// that fraction.
+    /// </para>
+    /// <para>
+    /// When this <see cref="HugeNumber"/> represents a whole or irrational number, this is the
+    /// value which is multiplied by ten times the <see cref="Exponent"/> to give the complete
+    /// value.
+    /// </para>
     /// </summary>
     public long Mantissa { get; }
 
@@ -148,6 +211,7 @@ readonly public partial struct HugeNumber :
         Mantissa = mantissa;
         MantissaDigits = mantissaDigits;
         Exponent = exponent;
+        Denominator = 1;
     }
 
     /// <summary>
@@ -162,6 +226,7 @@ readonly public partial struct HugeNumber :
         Mantissa = Reduce(mantissa, ref exponent, ref mantissaDigits);
         MantissaDigits = mantissaDigits;
         Exponent = exponent;
+        Denominator = 1;
     }
 
     /// <summary>
@@ -177,6 +242,7 @@ readonly public partial struct HugeNumber :
         Mantissa = mantissa;
         MantissaDigits = mantissaDigits;
         Exponent = exponent;
+        Denominator = 1;
     }
 
     /// <summary>
@@ -189,15 +255,17 @@ readonly public partial struct HugeNumber :
     {
         if (exponent > MAX_EXPONENT)
         {
-            Mantissa = POSITIVE_INFINITE_MANTISSA;
+            Mantissa = 1;
             MantissaDigits = 0;
             Exponent = 0;
+            Denominator = 0;
         }
         else if (exponent < MIN_EXPONENT)
         {
-            Mantissa = NEGATIVE_INFINITE_MANTISSA;
+            Mantissa = -1;
             MantissaDigits = 0;
             Exponent = 0;
+            Denominator = 0;
         }
         else
         {
@@ -207,6 +275,7 @@ readonly public partial struct HugeNumber :
             Mantissa = mantissa;
             MantissaDigits = mantissaDigits;
             Exponent = sExponent;
+            Denominator = 1;
         }
     }
 
@@ -222,6 +291,7 @@ readonly public partial struct HugeNumber :
         Mantissa = Reduce(mantissa, ref exponent, ref mantissaDigits);
         MantissaDigits = mantissaDigits;
         Exponent = exponent;
+        Denominator = 1;
     }
 
     /// <summary>
@@ -234,15 +304,17 @@ readonly public partial struct HugeNumber :
     {
         if (exponent > MAX_EXPONENT)
         {
-            Mantissa = POSITIVE_INFINITE_MANTISSA;
+            Mantissa = 1;
             MantissaDigits = 0;
             Exponent = 0;
+            Denominator = 0;
         }
         else if (exponent < MIN_EXPONENT)
         {
-            Mantissa = NEGATIVE_INFINITE_MANTISSA;
+            Mantissa = -1;
             MantissaDigits = 0;
             Exponent = 0;
+            Denominator = 0;
         }
         else
         {
@@ -251,6 +323,7 @@ readonly public partial struct HugeNumber :
             Mantissa = Reduce(mantissa, ref sExponent, ref mantissaDigits);
             MantissaDigits = mantissaDigits;
             Exponent = sExponent;
+            Denominator = 1;
         }
     }
 
@@ -265,11 +338,10 @@ readonly public partial struct HugeNumber :
         var val = (HugeNumber)mantissa;
         if (MAX_EXPONENT - exponent < val.Exponent)
         {
-            Mantissa = val >= 0
-                ? POSITIVE_INFINITE_MANTISSA
-                : NEGATIVE_INFINITE_MANTISSA;
+            Mantissa = val >= 0 ? 1 : -1;
             MantissaDigits = 0;
             Exponent = 0;
+            Denominator = 0;
         }
         else
         {
@@ -280,6 +352,7 @@ readonly public partial struct HugeNumber :
             Mantissa = vMantissa;
             MantissaDigits = vMantissaDigits;
             Exponent = totalExponent;
+            Denominator = 1;
         }
     }
 
@@ -293,15 +366,17 @@ readonly public partial struct HugeNumber :
     {
         if (exponent > MAX_EXPONENT)
         {
-            Mantissa = POSITIVE_INFINITE_MANTISSA;
+            Mantissa = 1;
             MantissaDigits = 0;
             Exponent = 0;
+            Denominator = 0;
         }
         else if (exponent < MIN_EXPONENT)
         {
-            Mantissa = NEGATIVE_INFINITE_MANTISSA;
+            Mantissa = -1;
             MantissaDigits = 0;
             Exponent = 0;
+            Denominator = 0;
         }
         else
         {
@@ -309,11 +384,10 @@ readonly public partial struct HugeNumber :
             var val = (HugeNumber)mantissa;
             if (MAX_EXPONENT - sExponent < val.Exponent)
             {
-                Mantissa = val >= 0
-                    ? POSITIVE_INFINITE_MANTISSA
-                    : NEGATIVE_INFINITE_MANTISSA;
+                Mantissa = val >= 0 ? 1 : -1;
                 MantissaDigits = 0;
                 Exponent = 0;
+                Denominator = 0;
             }
             else
             {
@@ -324,6 +398,7 @@ readonly public partial struct HugeNumber :
                 Mantissa = vMantissa;
                 MantissaDigits = vMantissaDigits;
                 Exponent = totalExponent;
+                Denominator = 1;
             }
         }
     }
@@ -338,32 +413,34 @@ readonly public partial struct HugeNumber :
     {
         if (double.IsNaN(mantissa))
         {
-            Mantissa = long.MaxValue;
+            Mantissa = 0;
             MantissaDigits = 0;
             Exponent = 0;
+            Denominator = 0;
         }
         else if (double.IsPositiveInfinity(mantissa))
         {
-            Mantissa = POSITIVE_INFINITE_MANTISSA;
+            Mantissa = 1;
             MantissaDigits = 0;
             Exponent = 0;
+            Denominator = 1;
         }
         else if (double.IsNegativeInfinity(mantissa))
         {
-            Mantissa = NEGATIVE_INFINITE_MANTISSA;
+            Mantissa = -1;
             MantissaDigits = 0;
             Exponent = 0;
+            Denominator = 0;
         }
         else
         {
             var val = (HugeNumber)mantissa;
             if (MAX_EXPONENT - exponent < val.Exponent)
             {
-                Mantissa = val >= 0
-                    ? POSITIVE_INFINITE_MANTISSA
-                    : NEGATIVE_INFINITE_MANTISSA;
+                Mantissa = val >= 0 ? 1 : -1;
                 MantissaDigits = 0;
                 Exponent = 0;
+                Denominator = 0;
             }
             else
             {
@@ -374,6 +451,7 @@ readonly public partial struct HugeNumber :
                 Mantissa = vMantissa;
                 MantissaDigits = vMantissaDigits;
                 Exponent = totalExponent;
+                Denominator = 1;
             }
         }
     }
@@ -388,23 +466,26 @@ readonly public partial struct HugeNumber :
     {
         if (double.IsNaN(mantissa))
         {
-            Mantissa = long.MaxValue;
+            Mantissa = 0;
             MantissaDigits = 0;
             Exponent = 0;
+            Denominator = 0;
         }
         else if (double.IsPositiveInfinity(mantissa)
             || exponent > MAX_EXPONENT)
         {
-            Mantissa = POSITIVE_INFINITE_MANTISSA;
+            Mantissa = 1;
             MantissaDigits = 0;
             Exponent = 0;
+            Denominator = 0;
         }
         else if (double.IsNegativeInfinity(mantissa)
             || exponent < MIN_EXPONENT)
         {
-            Mantissa = NEGATIVE_INFINITE_MANTISSA;
+            Mantissa = -1;
             MantissaDigits = 0;
             Exponent = 0;
+            Denominator = 1;
         }
         else
         {
@@ -412,11 +493,10 @@ readonly public partial struct HugeNumber :
             var val = (HugeNumber)mantissa;
             if (MAX_EXPONENT - sExponent < val.Exponent)
             {
-                Mantissa = val >= 0
-                    ? POSITIVE_INFINITE_MANTISSA
-                    : NEGATIVE_INFINITE_MANTISSA;
+                Mantissa = val >= 0 ? 1 : -1;
                 MantissaDigits = 0;
                 Exponent = 0;
+                Denominator = 0;
             }
             else
             {
@@ -427,14 +507,21 @@ readonly public partial struct HugeNumber :
                 Mantissa = vMantissa;
                 MantissaDigits = vMantissaDigits;
                 Exponent = totalExponent;
+                Denominator = 1;
             }
         }
     }
 
-    private HugeNumber(bool _, long mantissa = 0, short exponent = 0)
+    internal HugeNumber(long mantissa, ushort denominator, short exponent = 0, bool withReduce = false)
     {
+        var mantissaDigits = GetMantissaDigits(mantissa);
+        if (withReduce && denominator == 1)
+        {
+            Reduce(ref mantissa, ref exponent, ref mantissaDigits);
+        }
         Mantissa = mantissa;
-        MantissaDigits = GetMantissaDigits(mantissa);
+        MantissaDigits = mantissaDigits;
+        Denominator = denominator;
         Exponent = exponent;
     }
 
