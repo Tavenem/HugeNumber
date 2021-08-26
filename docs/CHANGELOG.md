@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0-preview.4
+### Updated
+- Dependencies
+
 ## 2.0.0-preview.3
 ### Added
 - Implement rational fraction support
