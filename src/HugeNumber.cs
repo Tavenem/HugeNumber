@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Tavenem.Mathematics;
 
 namespace Tavenem.HugeNumbers;
 
@@ -89,12 +90,12 @@ public readonly partial struct HugeNumber :
     IComparable<int>,
     IComparable<long>,
     IComparable<ulong>,
-    IFloatingPoint<HugeNumber>,
     IComparisonOperators<HugeNumber, decimal>,
     IComparisonOperators<HugeNumber, double>,
     IComparisonOperators<HugeNumber, long>,
     IComparisonOperators<HugeNumber, ulong>,
     IConvertible,
+    ICreateOther<HugeNumber>,
     IDivisionOperators<HugeNumber, decimal, HugeNumber>,
     IDivisionOperators<HugeNumber, double, HugeNumber>,
     IDivisionOperators<HugeNumber, long, HugeNumber>,
@@ -108,6 +109,7 @@ public readonly partial struct HugeNumber :
     IEquatable<int>,
     IEquatable<long>,
     IEquatable<ulong>,
+    IFloatingPoint<HugeNumber>,
     IMinMaxValue<HugeNumber>,
     IModulusOperators<HugeNumber, decimal, HugeNumber>,
     IModulusOperators<HugeNumber, double, HugeNumber>,

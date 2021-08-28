@@ -29,5 +29,53 @@ public class MiscTests
 
         numberResult = (HugeNumber)1E-08m;
         Assert.IsTrue(numberResult.Equals(new HugeNumber(1, -8)));
+
+        Assert.IsTrue(HugeNumber.TryCreate(1.0, out var converted));
+        Assert.AreEqual(HugeNumber.One, converted);
+
+        Assert.IsTrue(HugeNumber.TryCreate(double.PositiveInfinity, out converted));
+        Assert.AreEqual(HugeNumber.PositiveInfinity, converted);
+
+        Assert.IsTrue(HugeNumber.TryCreate(double.NegativeInfinity, out converted));
+        Assert.AreEqual(HugeNumber.NegativeInfinity, converted);
+
+        Assert.IsTrue(HugeNumber.TryCreate(double.NaN, out converted));
+        Assert.IsTrue(converted.IsNaN());
+
+        converted = HugeNumber.Create(1.0);
+        Assert.AreEqual(HugeNumber.One, converted);
+
+        converted = HugeNumber.Create(double.PositiveInfinity);
+        Assert.AreEqual(HugeNumber.PositiveInfinity, converted);
+
+        converted = HugeNumber.Create(double.NegativeInfinity);
+        Assert.AreEqual(HugeNumber.NegativeInfinity, converted);
+
+        converted = HugeNumber.Create(double.NaN);
+        Assert.IsTrue(converted.IsNaN());
+
+        converted = 1.0.Create<double, HugeNumber>();
+        Assert.AreEqual(HugeNumber.One, converted);
+
+        converted = double.PositiveInfinity.Create<double, HugeNumber>();
+        Assert.AreEqual(HugeNumber.PositiveInfinity, converted);
+
+        converted = double.NegativeInfinity.Create<double, HugeNumber>();
+        Assert.AreEqual(HugeNumber.NegativeInfinity, converted);
+
+        converted = double.NaN.Create<double, HugeNumber>();
+        Assert.IsTrue(converted.IsNaN());
+
+        result = HugeNumber.One.Create<HugeNumber, double>();
+        Assert.AreEqual(1.0, result);
+
+        result = HugeNumber.PositiveInfinity.Create<HugeNumber, double>();
+        Assert.AreEqual(double.PositiveInfinity, result);
+
+        result = HugeNumber.NegativeInfinity.Create<HugeNumber, double>();
+        Assert.AreEqual(double.NegativeInfinity, result);
+
+        result = HugeNumber.NaN.Create<HugeNumber, double>();
+        Assert.IsTrue(result.IsNaN());
     }
 }

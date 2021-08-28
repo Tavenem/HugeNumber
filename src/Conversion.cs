@@ -529,6 +529,54 @@ public partial struct HugeNumber
     }
 
     /// <summary>
+    /// Converts the given value to a <c>nint</c>.
+    /// </summary>
+    /// <param name="value">The <see cref="HugeNumber"/> to convert.</param>
+    public static explicit operator nint(HugeNumber value)
+    {
+        if (value.IsNaN())
+        {
+            throw new ArgumentOutOfRangeException(nameof(value), HugeNumberErrorMessages.NaNConversion);
+        }
+        else if (value.CompareTo(nint.MaxValue) > 0)
+        {
+            throw new OverflowException(HugeNumberErrorMessages.TypeRangeLimit);
+        }
+        else if (value.CompareTo(nint.MinValue) < 0)
+        {
+            throw new OverflowException(HugeNumberErrorMessages.TypeRangeLimit);
+        }
+        else
+        {
+            return (nint)Round(value).Mantissa;
+        }
+    }
+
+    /// <summary>
+    /// Converts the given value to a <c>nuint</c>.
+    /// </summary>
+    /// <param name="value">The <see cref="HugeNumber"/> to convert.</param>
+    public static explicit operator nuint(HugeNumber value)
+    {
+        if (value.IsNaN())
+        {
+            throw new ArgumentOutOfRangeException(nameof(value), HugeNumberErrorMessages.NaNConversion);
+        }
+        else if (value.CompareTo(nuint.MaxValue) > 0)
+        {
+            throw new OverflowException(HugeNumberErrorMessages.TypeRangeLimit);
+        }
+        else if (value.CompareTo(nuint.MinValue) < 0)
+        {
+            throw new OverflowException(HugeNumberErrorMessages.TypeRangeLimit);
+        }
+        else
+        {
+            return (nuint)Round(value).Mantissa;
+        }
+    }
+
+    /// <summary>
     /// Converts the given value to a <see cref="sbyte"/>.
     /// </summary>
     /// <param name="value">The <see cref="HugeNumber"/> to convert.</param>
@@ -647,6 +695,54 @@ public partial struct HugeNumber
             return (ushort)Round(value).Mantissa;
         }
     }
+
+    /// <summary>
+    /// Create a new instance of <typeparamref name="TTarget"/> from this instance.
+    /// </summary>
+    /// <typeparam name="TTarget">The type to create.</typeparam>
+    /// <returns>
+    /// A value of type <typeparamref name="TTarget"/> with the same value this instance.
+    /// </returns>
+    /// <remarks>
+    /// This method performs a checked conversion.
+    /// </remarks>
+    public TTarget Create<TTarget>() => TryCreate<TTarget>(out var result)
+        ? result
+        : throw new NotSupportedException($"Conversion from type {typeof(TTarget).Name} not supported");
+
+    /// <summary>
+    /// Create a new instance of <typeparamref name="TTarget"/> from this instance.
+    /// </summary>
+    /// <typeparam name="TTarget">The type to create.</typeparam>
+    /// <returns>
+    /// <para>
+    /// A value of type <typeparamref name="TTarget"/> with the same value as this instance.
+    /// </para>
+    /// <para>
+    /// -or- if this instance is less than the minimum allowed value of
+    /// <typeparamref name="TTarget"/>, the minimum allowed value.
+    /// </para>
+    /// <para>
+    /// -or- if this instance is greater than the maximum allowed value of
+    /// <typeparamref name="TTarget"/>, the maximum allowed value.
+    /// </para>
+    /// </returns>
+    /// <remarks>
+    /// This method performs a saturating (clamped) conversion.
+    /// </remarks>
+    public TTarget CreateSaturating<TTarget>() => Create<TTarget>();
+
+    /// <summary>
+    /// Create a new instance of <typeparamref name="TTarget"/> from this instance.
+    /// </summary>
+    /// <typeparam name="TTarget">The type to create.</typeparam>
+    /// <returns>
+    /// A value of type <typeparamref name="TTarget"/> with the same value as this instance.
+    /// </returns>
+    /// <remarks>
+    /// This method performs a truncating conversion.
+    /// </remarks>
+    public TTarget CreateTruncating<TTarget>() => Create<TTarget>();
 
     /// <summary>
     /// Returns the <see cref="TypeCode"/> for this instance.
@@ -897,4 +993,94 @@ public partial struct HugeNumber
     /// A <see cref="ulong"/> value equivalent to the value of this instance.
     /// </returns>
     public ulong ToUInt64(IFormatProvider? provider) => (ulong)this;
+
+    /// <summary>
+    /// Attempts to create a new instance of <typeparamref name="TTarget"/> from this instance.
+    /// </summary>
+    /// <typeparam name="TTarget">The type to create.</typeparam>
+    /// <param name="result">
+    /// If this method returns <see langword="true"/>, this will be set to a value of type
+    /// <typeparamref name="TTarget"/> with the same value as this instance.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> if the conversion succeeded; otherwise <see langword="false"/>.
+    /// </returns>
+    public bool TryCreate<TTarget>(out TTarget result)
+    {
+        if (typeof(TTarget) == typeof(byte))
+        {
+            result = (TTarget)(object)(byte)this;
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(char))
+        {
+            result = (TTarget)(object)(char)this;
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(decimal))
+        {
+            result = (TTarget)(object)(decimal)this;
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(double))
+        {
+            result = (TTarget)(object)(double)this;
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(short))
+        {
+            result = (TTarget)(object)(short)this;
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(int))
+        {
+            result = (TTarget)(object)(int)this;
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(long))
+        {
+            result = (TTarget)(object)(long)this;
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(nint))
+        {
+            result = (TTarget)(object)(nint)this;
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(sbyte))
+        {
+            result = (TTarget)(object)(sbyte)this;
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(float))
+        {
+            result = (TTarget)(object)(float)this;
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(ushort))
+        {
+            result = (TTarget)(object)(ushort)this;
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(uint))
+        {
+            result = (TTarget)(object)(uint)this;
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(ulong))
+        {
+            result = (TTarget)(object)(ulong)this;
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(nuint))
+        {
+            result = (TTarget)(object)(nuint)this;
+            return true;
+        }
+        else
+        {
+            result = default!;
+            return false;
+        }
+    }
 }
