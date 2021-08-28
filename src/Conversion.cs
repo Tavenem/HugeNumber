@@ -319,6 +319,10 @@ public partial struct HugeNumber
         }
         var neg = str.StartsWith(CultureInfo.InvariantCulture.NumberFormat.NegativeSign);
         var mantissaStr = string.Concat(str.ToArray().Where(char.IsDigit)).TrimStart('0');
+        if (mantissaStr.Length == 0)
+        {
+            return HugeNumber.Zero;
+        }
         var diff = mantissaStr.Length - 19;
         if (diff > 0)
         {

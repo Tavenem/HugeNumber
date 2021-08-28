@@ -25,10 +25,22 @@ public class MiscTests
         Assert.IsTrue(result.IsNearlyEqualTo(-0.7280716627805054e7, 1e-8));
 
         var numberResult = (HugeNumber)1E-08;
-        Assert.IsTrue(numberResult.Equals(new HugeNumber(1, -8)));
+        Assert.AreEqual(new HugeNumber(1, -8), numberResult);
+
+        numberResult = (HugeNumber)0m;
+        Assert.AreEqual(HugeNumber.Zero, numberResult);
+
+        numberResult = (HugeNumber)1.2m;
+        Assert.AreEqual(new HugeNumber(12, -1), numberResult);
+
+        numberResult = (HugeNumber)(-1.2m);
+        Assert.AreEqual(new HugeNumber(-12, -1), numberResult);
 
         numberResult = (HugeNumber)1E-08m;
-        Assert.IsTrue(numberResult.Equals(new HugeNumber(1, -8)));
+        Assert.AreEqual(new HugeNumber(1, -8), numberResult);
+
+        numberResult = (HugeNumber)(-1E-08m);
+        Assert.AreEqual(new HugeNumber(-1, -8), numberResult);
 
         Assert.IsTrue(HugeNumber.TryCreate(1.0, out var converted));
         Assert.AreEqual(HugeNumber.One, converted);

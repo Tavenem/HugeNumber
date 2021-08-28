@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0-preview.6
+### Fixed
+- decimal conversion
+
 ## 2.0.0-preview.5
 ### Added
 - Implement `ICreateOther`
