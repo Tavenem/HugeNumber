@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0-preview.7
+### Fixed
+- `Atan` implementation
+
 ## 2.0.0-preview.6
 ### Fixed
 - decimal conversion

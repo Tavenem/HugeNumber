@@ -224,6 +224,10 @@ public partial struct HugeNumber
         {
             return Zero;
         }
+        if (value == One)
+        {
+            return HugeNumberConstants.QuarterPi;
+        }
         if (value.IsNegativeInfinity())
         {
             return -HugeNumberConstants.HalfPi;
@@ -232,27 +236,24 @@ public partial struct HugeNumber
         {
             return HugeNumberConstants.HalfPi;
         }
-        if (value < 0)
+        if (value.IsNegative())
         {
             return -Atan(-value);
         }
-        if (value > 1)
+        if (value > One)
         {
-            return HugeNumberConstants.HalfPi - Atan(1 / value);
-        }
-        if (value == One)
-        {
-            return HugeNumberConstants.QuarterPi;
+            return HugeNumberConstants.HalfPi - Atan(One / value);
         }
         if (value > _TwoMinusRoot3)
         {
-            return HugeNumberConstants.SixthPi + Atan(((_Root3 * value) - 1) / (_Root3 + value));
+            return HugeNumberConstants.Two * Atan(value / (One + Sqrt(One + (value * value))));
         }
 
         var subtract = true;
         var power = value.Cube();
         var square = value.Square();
         var denominator = new HugeNumber(3);
+        var two = new HugeNumber(2);
         var result = value - (power / denominator);
         HugeNumber lastResult;
         do
@@ -261,7 +262,7 @@ public partial struct HugeNumber
 
             subtract = !subtract;
             power *= square;
-            denominator += 2;
+            denominator += two;
 
             if (subtract)
             {

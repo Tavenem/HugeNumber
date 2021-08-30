@@ -125,6 +125,11 @@ public static class HugeNumberConstants
     public static HugeNumber Third { get; } = new(1, 3, 0);
 
     /// <summary>
+    /// Respresents 2 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Two { get; } = new(2);
+
+    /// <summary>
     /// Represents 1e-24 as a <see cref="HugeNumber"/>.
     /// </summary>
     public static HugeNumber Yocto { get; } = new(1, -24);
