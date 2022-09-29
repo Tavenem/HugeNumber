@@ -3,68 +3,6 @@
 public partial struct HugeNumber
 {
     /// <summary>
-    /// Determines whether the specified value is finite (neither positive or negative
-    /// infinity, nor <see cref="NaN"/>).
-    /// </summary>
-    public static bool IsFinite(HugeNumber x) => x.Denominator > 0;
-
-    /// <summary>
-    /// Determines whether the specified value is finite (neither positive or negative
-    /// infinity, nor <see cref="NaN"/>).
-    /// </summary>
-    public bool IsFinite() => IsFinite(this);
-
-    /// <summary>
-    /// Returns a value indicating whether the specified number evaluates to negative or positive infinity.
-    /// </summary>
-    /// <param name="x">A <see cref="HugeNumber"/>.</param>
-    /// <returns>
-    /// <see langword="true"/> if <paramref name="x"/> evaluates to <see cref="PositiveInfinity"/> or <see cref="NegativeInfinity"/>;
-    /// otherwise, <see langword="false"/>.
-    /// </returns>
-    public static bool IsInfinity(HugeNumber x) => x.Mantissa != 0 && x.Denominator == 0;
-
-    /// <summary>
-    /// Returns a value indicating whether this instance evaluates to negative or positive infinity.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if this instance evaluates to <see cref="PositiveInfinity"/> or <see cref="NegativeInfinity"/>;
-    /// otherwise, <see langword="false"/>.
-    /// </returns>
-    public bool IsInfinity() => IsInfinity(this);
-
-    /// <summary>
-    /// Returns a value that indicates whether the specified value is not a number (<see cref="NaN"/>).
-    /// </summary>
-    /// <param name="x">A <see cref="HugeNumber"/>.</param>
-    /// <returns>
-    /// <see langword="true"/> if <paramref name="x"/> evaluates to <see cref="NaN"/>;
-    /// otherwise, <see langword="false"/>.
-    /// </returns>
-    /// <remarks>
-    /// <para>
-    /// Floating-point operations return <see cref="NaN"/> to signal that result of the operation is undefined.
-    /// For example, dividing <see cref="Zero"/> by <see cref="Zero"/> results in <see cref="NaN"/>.
-    /// </para>
-    /// </remarks>
-    public static bool IsNaN(HugeNumber x) => x.Mantissa == 0 && x.Denominator == 0;
-
-    /// <summary>
-    /// Returns a value that indicates whether this instance is not a number (<see cref="NaN"/>).
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if this instance evaluates to <see cref="NaN"/>;
-    /// otherwise, <see langword="false"/>.
-    /// </returns>
-    /// <remarks>
-    /// <para>
-    /// Floating-point operations return <see cref="NaN"/> to signal that result of the operation is undefined.
-    /// For example, dividing <see cref="Zero"/> by <see cref="Zero"/> results in <see cref="NaN"/>.
-    /// </para>
-    /// </remarks>
-    public bool IsNaN() => IsNaN(this);
-
-    /// <summary>
     /// Determines if <see cref="HugeNumber"/> values are nearly equal, within a tolerance
     /// determined by the given epsilon value.
     /// </summary>
@@ -130,64 +68,6 @@ public partial struct HugeNumber
     public bool IsNearlyZero() => IsNearlyZero(this);
 
     /// <summary>
-    /// Determines whether the specified value is negative.
-    /// </summary>
-    /// <param name="x">A <see cref="HugeNumber"/>.</param>
-    /// <returns>
-    /// <see langword="true"/> if <paramref name="x"/> is negative;
-    /// otherwise, <see langword="false"/>.
-    /// </returns>
-    public static bool IsNegative(HugeNumber x) => x.Mantissa < 0 || (x.Mantissa == 0 && x.Exponent < 0);
-
-    /// <summary>
-    /// Determines whether this instance is negative.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if this instance is negative;
-    /// otherwise, <see langword="false"/>.
-    /// </returns>
-    public bool IsNegative() => IsNegative(this);
-
-    /// <summary>
-    /// Returns a value indicating whether the specified number evaluates to negative infinity.
-    /// </summary>
-    /// <param name="x">A <see cref="HugeNumber"/>.</param>
-    /// <returns>
-    /// <see langword="true"/> if <paramref name="x"/> evaluates to <see cref="NegativeInfinity"/>;
-    /// otherwise, <see langword="false"/>.
-    /// </returns>
-    /// <remarks>
-    /// Floating-point operations return <see cref="NegativeInfinity"/> to signal an overflow condition.
-    /// </remarks>
-    public static bool IsNegativeInfinity(HugeNumber x) => x.Mantissa < 0 && x.Denominator == 0;
-
-    /// <summary>
-    /// Returns a value indicating whether this instance evaluates to negative infinity.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if this instance evaluates to <see cref="NegativeInfinity"/>;
-    /// otherwise, <see langword="false"/>.
-    /// </returns>
-    /// <remarks>
-    /// Floating-point operations return <see cref="NegativeInfinity"/> to signal an overflow condition.
-    /// </remarks>
-    public bool IsNegativeInfinity() => IsNegativeInfinity(this);
-
-    /// <summary>
-    /// Determines whether the specified value is normal.
-    /// </summary>
-    /// <param name="x">A <see cref="HugeNumber"/>.</param>
-    /// <returns>
-    /// <see langword="true"/> if <paramref name="x"/> is normal;
-    /// otherwise, <see langword="false"/>.
-    /// </returns>
-    /// <remarks>
-    /// Always <see langword="true"/> for <see cref="HugeNumber"/>, which does not require
-    /// subnormal numbers to represent small values around zero.
-    /// </remarks>
-    public static bool IsNormal(HugeNumber x) => true;
-
-    /// <summary>
     /// Returns a value indicating whether the specified number represents a non-integral value
     /// which is not expressed as a rational fraction.
     /// </summary>
@@ -251,50 +131,6 @@ public partial struct HugeNumber
     public bool IsNotRational() => IsNotRational(this);
 
     /// <summary>
-    /// Determines whether the specified value is positive.
-    /// </summary>
-    /// <param name="x">A <see cref="HugeNumber"/>.</param>
-    /// <returns>
-    /// <see langword="true"/> if <paramref name="x"/> is positive;
-    /// otherwise, <see langword="false"/>.
-    /// </returns>
-    public static bool IsPositive(HugeNumber x) => x.Mantissa > 0;
-
-    /// <summary>
-    /// Determines whether this instance is positive.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if this instance is positive;
-    /// otherwise, <see langword="false"/>.
-    /// </returns>
-    public bool IsPositive() => IsPositive(this);
-
-    /// <summary>
-    /// Returns a value indicating whether the specified number evaluates to positive infinity.
-    /// </summary>
-    /// <param name="x">A <see cref="HugeNumber"/>.</param>
-    /// <returns>
-    /// <see langword="true"/> if <paramref name="x"/> evaluates to <see cref="PositiveInfinity"/>;
-    /// otherwise, <see langword="false"/>.
-    /// </returns>
-    /// <remarks>
-    /// Floating-point operations return <see cref="PositiveInfinity"/> to signal an overflow condition.
-    /// </remarks>
-    public static bool IsPositiveInfinity(HugeNumber x) => x.Mantissa > 0 && x.Denominator == 0;
-
-    /// <summary>
-    /// Returns a value indicating whether this instance evaluates to positive infinity.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if this instance evaluates to <see cref="PositiveInfinity"/>;
-    /// otherwise, <see langword="false"/>.
-    /// </returns>
-    /// <remarks>
-    /// Floating-point operations return <see cref="PositiveInfinity"/> to signal an overflow condition.
-    /// </remarks>
-    public bool IsPositiveInfinity() => IsPositiveInfinity(this);
-
-    /// <summary>
     /// Returns a value indicating whether the specified number represents either an integral value
     /// or a rational fraction.
     /// </summary>
@@ -320,43 +156,4 @@ public partial struct HugeNumber
     /// rational fraction); otherwise, <see langword="false"/>.
     /// </returns>
     public bool IsRational() => IsRational(this);
-
-    /// <summary>
-    /// Determines whether the specified value is subnormal.
-    /// </summary>
-    /// <param name="x">A <see cref="HugeNumber"/>.</param>
-    /// <returns>
-    /// <see langword="true"/> if <paramref name="x"/> is subnormal;
-    /// otherwise, <see langword="false"/>.
-    /// </returns>
-    /// <remarks>
-    /// Always <see langword="false"/> for <see cref="HugeNumber"/>, which does not require
-    /// subnormal numbers to represent small values around zero.
-    /// </remarks>
-    public static bool IsSubnormal(HugeNumber x) => false;
-
-    /// <summary>
-    /// Gets a number that indicates the sign (negative, positive, or zero) of <paramref
-    /// name="value"/>.
-    /// </summary>
-    /// <param name="value">A number.</param>
-    /// <returns>
-    /// A number that indicates the sign (negative, positive, or zero) of <paramref
-    /// name="value"/>.
-    /// </returns>
-    /// <remarks>
-    /// The sign of <see cref="NaN"/> is 0.
-    /// </remarks>
-    public static HugeNumber Sign(HugeNumber value) => Math.Sign(value.Mantissa);
-
-    /// <summary>
-    /// Gets a number that indicates the sign (negative, positive, or zero) of this instance.
-    /// </summary>
-    /// <returns>
-    /// A number that indicates the sign (negative, positive, or zero) of this instance.
-    /// </returns>
-    /// <remarks>
-    /// The sign of <see cref="NaN"/> is 0.
-    /// </remarks>
-    public HugeNumber Sign() => Sign(this);
 }

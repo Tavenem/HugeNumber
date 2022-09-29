@@ -54,40 +54,28 @@ public class MiscTests
         Assert.IsTrue(HugeNumber.TryCreate(double.NaN, out converted));
         Assert.IsTrue(converted.IsNaN());
 
-        converted = HugeNumber.Create(1.0);
+        converted = HugeNumber.CreateChecked(1.0);
         Assert.AreEqual(HugeNumber.One, converted);
 
-        converted = HugeNumber.Create(double.PositiveInfinity);
+        converted = HugeNumber.CreateChecked(double.PositiveInfinity);
         Assert.AreEqual(HugeNumber.PositiveInfinity, converted);
 
-        converted = HugeNumber.Create(double.NegativeInfinity);
+        converted = HugeNumber.CreateChecked(double.NegativeInfinity);
         Assert.AreEqual(HugeNumber.NegativeInfinity, converted);
 
-        converted = HugeNumber.Create(double.NaN);
+        converted = HugeNumber.CreateChecked(double.NaN);
         Assert.IsTrue(converted.IsNaN());
 
-        converted = 1.0.Create<double, HugeNumber>();
-        Assert.AreEqual(HugeNumber.One, converted);
-
-        converted = double.PositiveInfinity.Create<double, HugeNumber>();
-        Assert.AreEqual(HugeNumber.PositiveInfinity, converted);
-
-        converted = double.NegativeInfinity.Create<double, HugeNumber>();
-        Assert.AreEqual(HugeNumber.NegativeInfinity, converted);
-
-        converted = double.NaN.Create<double, HugeNumber>();
-        Assert.IsTrue(converted.IsNaN());
-
-        result = HugeNumber.One.Create<HugeNumber, double>();
+        result = (double)HugeNumber.One;
         Assert.AreEqual(1.0, result);
 
-        result = HugeNumber.PositiveInfinity.Create<HugeNumber, double>();
+        result = (double)HugeNumber.PositiveInfinity;
         Assert.AreEqual(double.PositiveInfinity, result);
 
-        result = HugeNumber.NegativeInfinity.Create<HugeNumber, double>();
+        result = (double)HugeNumber.NegativeInfinity;
         Assert.AreEqual(double.NegativeInfinity, result);
 
-        result = HugeNumber.NaN.Create<HugeNumber, double>();
+        result = (double)HugeNumber.NaN;
         Assert.IsTrue(result.IsNaN());
     }
 }

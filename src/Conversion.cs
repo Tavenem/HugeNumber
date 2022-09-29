@@ -17,7 +17,7 @@ public partial struct HugeNumber
     /// otherwise <see langword="false"/>.
     /// </returns>
     public static bool TryCreate<TOther>(TOther value, out HugeNumber result)
-        where TOther : INumber<TOther>
+        where TOther : INumberBase<TOther>
     {
         if (typeof(TOther) == typeof(byte))
         {
@@ -112,7 +112,7 @@ public partial struct HugeNumber
     /// This method is intended to perform a checked conversion, but no supported type can
     /// have a value which exceeds the range representable by <see cref="HugeNumber"/>.
     /// </remarks>
-    public static HugeNumber Create<TOther>(TOther value) where TOther : INumber<TOther>
+    public static HugeNumber CreateChecked<TOther>(TOther value) where TOther : INumberBase<TOther>
         => TryCreate(value, out var result)
         ? result
         : throw new NotSupportedException($"Conversion from type {typeof(TOther).Name} not supported");
@@ -131,7 +131,7 @@ public partial struct HugeNumber
     /// have a value which exceeds the range representable by <see cref="HugeNumber"/>.
     /// </remarks>
     public static HugeNumber CreateSaturating<TOther>(TOther value)
-        where TOther : INumber<TOther> => Create(value);
+        where TOther : INumberBase<TOther> => CreateChecked(value);
 
     /// <summary>
     /// Creates a new instance of <see cref="HugeNumber"/> by converting an existing value.
@@ -147,7 +147,7 @@ public partial struct HugeNumber
     /// have a value which exceeds the range representable by <see cref="HugeNumber"/>.
     /// </remarks>
     public static HugeNumber CreateTruncating<TOther>(TOther value)
-        where TOther : INumber<TOther> => Create(value);
+        where TOther : INumberBase<TOther> => CreateChecked(value);
 
     /// <summary>
     /// Converts the given value to a <see cref="HugeNumber"/>.
@@ -321,13 +321,13 @@ public partial struct HugeNumber
         var mantissaStr = string.Concat(str.ToArray().Where(char.IsDigit)).TrimStart('0');
         if (mantissaStr.Length == 0)
         {
-            return HugeNumber.Zero;
+            return Zero;
         }
         var diff = mantissaStr.Length - 19;
         if (diff > 0)
         {
             exponent += diff;
-            mantissaStr = mantissaStr.Substring(0, 19);
+            mantissaStr = mantissaStr[..19];
         }
         var uMantissa = ulong.Parse(mantissaStr);
         if (uMantissa > 999999999999999999) // 18 digits
@@ -363,7 +363,7 @@ public partial struct HugeNumber
     {
         if (value.IsNaN())
         {
-            throw new ArgumentOutOfRangeException(nameof(value), HugeNumberErrorMessages.NaNConversion);
+            throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
         }
         else if (value.CompareTo(byte.MaxValue) > 0)
         {
@@ -387,7 +387,7 @@ public partial struct HugeNumber
     {
         if (value.IsNaN())
         {
-            throw new ArgumentOutOfRangeException(nameof(value), HugeNumberErrorMessages.NaNConversion);
+            throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
         }
         else if (value.CompareTo(ushort.MaxValue) > 0)
         {
@@ -411,7 +411,7 @@ public partial struct HugeNumber
     {
         if (value.IsNaN())
         {
-            throw new ArgumentOutOfRangeException(nameof(value), HugeNumberErrorMessages.NaNConversion);
+            throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
         }
         else if (value.CompareTo(decimal.MaxValue) > 0)
         {
@@ -492,7 +492,7 @@ public partial struct HugeNumber
     {
         if (value.IsNaN())
         {
-            throw new ArgumentOutOfRangeException(nameof(value), HugeNumberErrorMessages.NaNConversion);
+            throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
         }
         else if (value.CompareTo(int.MaxValue) > 0)
         {
@@ -516,7 +516,7 @@ public partial struct HugeNumber
     {
         if (value.IsNaN())
         {
-            throw new ArgumentOutOfRangeException(nameof(value), HugeNumberErrorMessages.NaNConversion);
+            throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
         }
         else if (value.CompareTo(long.MaxValue) > 0)
         {
@@ -540,7 +540,7 @@ public partial struct HugeNumber
     {
         if (value.IsNaN())
         {
-            throw new ArgumentOutOfRangeException(nameof(value), HugeNumberErrorMessages.NaNConversion);
+            throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
         }
         else if (value.CompareTo(nint.MaxValue) > 0)
         {
@@ -564,7 +564,7 @@ public partial struct HugeNumber
     {
         if (value.IsNaN())
         {
-            throw new ArgumentOutOfRangeException(nameof(value), HugeNumberErrorMessages.NaNConversion);
+            throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
         }
         else if (value.CompareTo(nuint.MaxValue) > 0)
         {
@@ -588,7 +588,7 @@ public partial struct HugeNumber
     {
         if (value.IsNaN())
         {
-            throw new ArgumentOutOfRangeException(nameof(value), HugeNumberErrorMessages.NaNConversion);
+            throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
         }
         else if (value.CompareTo(sbyte.MaxValue) > 0)
         {
@@ -612,7 +612,7 @@ public partial struct HugeNumber
     {
         if (value.IsNaN())
         {
-            throw new ArgumentOutOfRangeException(nameof(value), HugeNumberErrorMessages.NaNConversion);
+            throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
         }
         else if (value.CompareTo(short.MaxValue) > 0)
         {
@@ -636,7 +636,7 @@ public partial struct HugeNumber
     {
         if (value.IsNaN())
         {
-            throw new ArgumentOutOfRangeException(nameof(value), HugeNumberErrorMessages.NaNConversion);
+            throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
         }
         else if (value.CompareTo(uint.MaxValue) > 0)
         {
@@ -660,7 +660,7 @@ public partial struct HugeNumber
     {
         if (value.IsNaN())
         {
-            throw new ArgumentOutOfRangeException(nameof(value), HugeNumberErrorMessages.NaNConversion);
+            throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
         }
         else if (value.CompareTo(ulong.MaxValue) > 0)
         {
@@ -684,7 +684,7 @@ public partial struct HugeNumber
     {
         if (value.IsNaN())
         {
-            throw new ArgumentOutOfRangeException(nameof(value), HugeNumberErrorMessages.NaNConversion);
+            throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
         }
         else if (value.CompareTo(ushort.MaxValue) > 0)
         {
@@ -699,54 +699,6 @@ public partial struct HugeNumber
             return (ushort)Round(value).Mantissa;
         }
     }
-
-    /// <summary>
-    /// Create a new instance of <typeparamref name="TTarget"/> from this instance.
-    /// </summary>
-    /// <typeparam name="TTarget">The type to create.</typeparam>
-    /// <returns>
-    /// A value of type <typeparamref name="TTarget"/> with the same value this instance.
-    /// </returns>
-    /// <remarks>
-    /// This method performs a checked conversion.
-    /// </remarks>
-    public TTarget Create<TTarget>() => TryCreate<TTarget>(out var result)
-        ? result
-        : throw new NotSupportedException($"Conversion from type {typeof(TTarget).Name} not supported");
-
-    /// <summary>
-    /// Create a new instance of <typeparamref name="TTarget"/> from this instance.
-    /// </summary>
-    /// <typeparam name="TTarget">The type to create.</typeparam>
-    /// <returns>
-    /// <para>
-    /// A value of type <typeparamref name="TTarget"/> with the same value as this instance.
-    /// </para>
-    /// <para>
-    /// -or- if this instance is less than the minimum allowed value of
-    /// <typeparamref name="TTarget"/>, the minimum allowed value.
-    /// </para>
-    /// <para>
-    /// -or- if this instance is greater than the maximum allowed value of
-    /// <typeparamref name="TTarget"/>, the maximum allowed value.
-    /// </para>
-    /// </returns>
-    /// <remarks>
-    /// This method performs a saturating (clamped) conversion.
-    /// </remarks>
-    public TTarget CreateSaturating<TTarget>() => Create<TTarget>();
-
-    /// <summary>
-    /// Create a new instance of <typeparamref name="TTarget"/> from this instance.
-    /// </summary>
-    /// <typeparam name="TTarget">The type to create.</typeparam>
-    /// <returns>
-    /// A value of type <typeparamref name="TTarget"/> with the same value as this instance.
-    /// </returns>
-    /// <remarks>
-    /// This method performs a truncating conversion.
-    /// </remarks>
-    public TTarget CreateTruncating<TTarget>() => Create<TTarget>();
 
     /// <summary>
     /// Returns the <see cref="TypeCode"/> for this instance.
@@ -1009,7 +961,14 @@ public partial struct HugeNumber
     /// <returns>
     /// <see langword="true"/> if the conversion succeeded; otherwise <see langword="false"/>.
     /// </returns>
-    public bool TryCreate<TTarget>(out TTarget result)
+    /// <exception cref="InvalidOperationException">
+    /// This value is <see cref="NaN"/> and <typeparamref name="TTarget"/> cannot represent NaN
+    /// values.
+    /// </exception>
+    /// <exception cref="OverflowException">
+    /// This value is not within the representable range of <typeparamref name="TTarget"/>.
+    /// </exception>
+    public bool TryCreateChecked<TTarget>(out TTarget result)
     {
         if (typeof(TTarget) == typeof(byte))
         {
@@ -1087,4 +1046,334 @@ public partial struct HugeNumber
             return false;
         }
     }
+
+    /// <summary>
+    /// Attempts to create a new instance of <typeparamref name="TTarget"/> from this instance.
+    /// </summary>
+    /// <typeparam name="TTarget">The type to create.</typeparam>
+    /// <param name="result">
+    /// If this method returns <see langword="true"/>, this will be set to a value of type
+    /// <typeparamref name="TTarget"/> with the same value as this instance.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> if the conversion succeeded; otherwise <see langword="false"/>.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// This value is <see cref="NaN"/> and <typeparamref name="TTarget"/> cannot represent NaN
+    /// values.
+    /// </exception>
+    public bool TryCreateSaturating<TTarget>(out TTarget result)
+    {
+        if (typeof(TTarget) == typeof(byte))
+        {
+            if (IsNaN())
+            {
+                throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
+            }
+            else if (CompareTo(byte.MaxValue) > 0)
+            {
+                result = (TTarget)(object)byte.MaxValue;
+            }
+            else if (CompareTo(byte.MinValue) < 0)
+            {
+                result = (TTarget)(object)byte.MinValue;
+            }
+            else
+            {
+                result = (TTarget)(object)(byte)Round().Mantissa;
+            }
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(char))
+        {
+            if (IsNaN())
+            {
+                throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
+            }
+            else if (CompareTo(ushort.MaxValue) > 0)
+            {
+                result = (TTarget)(object)Convert.ToChar(ushort.MaxValue);
+            }
+            else if (CompareTo(ushort.MinValue) < 0)
+            {
+                result = (TTarget)(object)Convert.ToChar(ushort.MinValue);
+            }
+            else
+            {
+                result = (TTarget)(object)Convert.ToChar((ushort)Round().Mantissa);
+            }
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(decimal))
+        {
+            if (IsNaN())
+            {
+                throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
+            }
+            else if (CompareTo(decimal.MaxValue) > 0)
+            {
+                result = (TTarget)(object)decimal.MaxValue;
+            }
+            else if (CompareTo(decimal.MinValue) < 0)
+            {
+                result = (TTarget)(object)decimal.MinValue;
+            }
+            else
+            {
+                var v = (decimal)Mantissa / Denominator;
+                for (var i = 0; i < Exponent; i++)
+                {
+                    v *= 10;
+                }
+                for (var i = 0; i > Exponent; i--)
+                {
+                    v /= 10;
+                }
+                result = (TTarget)(object)v;
+            }
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(double))
+        {
+            if (IsNaN())
+            {
+                result = (TTarget)(object)double.NaN;
+            }
+            else if (IsPositiveInfinity() || CompareTo(double.MaxValue) > 0)
+            {
+                result = (TTarget)(object)double.PositiveInfinity;
+            }
+            else if (IsNegativeInfinity() || CompareTo(double.MinValue) < 0)
+            {
+                result = (TTarget)(object)double.NegativeInfinity;
+            }
+            else
+            {
+                result = (TTarget)(object)((double)Mantissa / Denominator * Math.Pow(10, Exponent));
+            }
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(short))
+        {
+            if (IsNaN())
+            {
+                throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
+            }
+            else if (CompareTo(short.MaxValue) > 0)
+            {
+                result = (TTarget)(object)short.MaxValue;
+            }
+            else if (CompareTo(short.MinValue) < 0)
+            {
+                result = (TTarget)(object)short.MinValue;
+            }
+            else
+            {
+                result = (TTarget)(object)(short)Round().Mantissa;
+            }
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(int))
+        {
+            if (IsNaN())
+            {
+                throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
+            }
+            else if (CompareTo(int.MaxValue) > 0)
+            {
+                result = (TTarget)(object)int.MaxValue;
+            }
+            else if (CompareTo(int.MinValue) < 0)
+            {
+                result = (TTarget)(object)int.MinValue;
+            }
+            else
+            {
+                result = (TTarget)(object)(int)Round().Mantissa;
+            }
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(long))
+        {
+            if (IsNaN())
+            {
+                throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
+            }
+            else if (CompareTo(long.MaxValue) > 0)
+            {
+                result = (TTarget)(object)long.MaxValue;
+            }
+            else if (CompareTo(long.MinValue) < 0)
+            {
+                result = (TTarget)(object)long.MinValue;
+            }
+            else
+            {
+                result = (TTarget)(object)Round().Mantissa;
+            }
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(nint))
+        {
+            if (IsNaN())
+            {
+                throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
+            }
+            else if (CompareTo(nint.MaxValue) > 0)
+            {
+                result = (TTarget)(object)nint.MaxValue;
+            }
+            else if (CompareTo(nint.MinValue) < 0)
+            {
+                result = (TTarget)(object)nint.MinValue;
+            }
+            else
+            {
+                result = (TTarget)(object)(nint)Round().Mantissa;
+            }
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(sbyte))
+        {
+            if (IsNaN())
+            {
+                throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
+            }
+            else if (CompareTo(sbyte.MaxValue) > 0)
+            {
+                result = (TTarget)(object)sbyte.MaxValue;
+            }
+            else if (CompareTo(sbyte.MinValue) < 0)
+            {
+                result = (TTarget)(object)sbyte.MinValue;
+            }
+            else
+            {
+                result = (TTarget)(object)(sbyte)Round().Mantissa;
+            }
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(float))
+        {
+            if (IsNaN())
+            {
+                result = (TTarget)(object)float.NaN;
+            }
+            else if (IsPositiveInfinity() || CompareTo(float.MaxValue) > 0)
+            {
+                result = (TTarget)(object)float.PositiveInfinity;
+            }
+            else if (IsNegativeInfinity() || CompareTo(float.MinValue) < 0)
+            {
+                result = (TTarget)(object)float.NegativeInfinity;
+            }
+            else
+            {
+                result = (TTarget)(object)(float)((double)Mantissa / Denominator * Math.Pow(10, Exponent));
+            }
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(ushort))
+        {
+            if (IsNaN())
+            {
+                throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
+            }
+            else if (CompareTo(ushort.MaxValue) > 0)
+            {
+                result = (TTarget)(object)ushort.MaxValue;
+            }
+            else if (CompareTo(ushort.MinValue) < 0)
+            {
+                result = (TTarget)(object)ushort.MinValue;
+            }
+            else
+            {
+                result = (TTarget)(object)(ushort)Round().Mantissa;
+            }
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(uint))
+        {
+            if (IsNaN())
+            {
+                throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
+            }
+            else if (CompareTo(uint.MaxValue) > 0)
+            {
+                result = (TTarget)(object)uint.MaxValue;
+            }
+            else if (CompareTo(uint.MinValue) < 0)
+            {
+                result = (TTarget)(object)uint.MinValue;
+            }
+            else
+            {
+                result = (TTarget)(object)(uint)Round().Mantissa;
+            }
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(ulong))
+        {
+            if (IsNaN())
+            {
+                throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
+            }
+            else if (CompareTo(ulong.MaxValue) > 0)
+            {
+                result = (TTarget)(object)ulong.MaxValue;
+            }
+            else if (CompareTo(ulong.MinValue) < 0)
+            {
+                result = (TTarget)(object)ulong.MinValue;
+            }
+            else
+            {
+                result = (TTarget)(object)(ulong)Round().Mantissa;
+            }
+            return true;
+        }
+        else if (typeof(TTarget) == typeof(nuint))
+        {
+            if (IsNaN())
+            {
+                throw new InvalidOperationException(HugeNumberErrorMessages.NaNConversion);
+            }
+            else if (CompareTo(nuint.MaxValue) > 0)
+            {
+                result = (TTarget)(object)nuint.MaxValue;
+            }
+            else if (CompareTo(nuint.MinValue) < 0)
+            {
+                result = (TTarget)(object)nuint.MinValue;
+            }
+            else
+            {
+                result = (TTarget)(object)(nuint)Round().Mantissa;
+            }
+            return true;
+        }
+        else
+        {
+            result = default!;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Attempts to create a new instance of <typeparamref name="TTarget"/> from this instance.
+    /// </summary>
+    /// <typeparam name="TTarget">The type to create.</typeparam>
+    /// <param name="result">
+    /// If this method returns <see langword="true"/>, this will be set to a value of type
+    /// <typeparamref name="TTarget"/> with the same value as this instance.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> if the conversion succeeded; otherwise <see langword="false"/>.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// This value is <see cref="NaN"/> and <typeparamref name="TTarget"/> cannot represent NaN
+    /// values.
+    /// </exception>
+    public bool TryCreateTrancating<TTarget>(out TTarget result) => TryCreateSaturating(out result);
 }

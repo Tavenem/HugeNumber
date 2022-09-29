@@ -175,12 +175,12 @@ public class MathTests
         Assert.AreEqual(3, first.Denominator);
         Assert.AreEqual(2.0m / 3.0m, (decimal)first);
 
-        var result = first.Invert();
+        var result = first.Reciprocal();
         Assert.AreEqual(3, result.Mantissa);
         Assert.AreEqual(2, result.Denominator);
         Assert.AreEqual(3.0m / 2.0m, (decimal)result);
 
-        result = HugeNumberConstants.Half.Invert();
+        result = HugeNumberConstants.Half.Reciprocal();
         Assert.AreEqual(2, (int)result);
     }
 

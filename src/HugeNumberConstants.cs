@@ -50,14 +50,24 @@ public static class HugeNumberConstants
     public static HugeNumber Deci { get; } = new(1, 10, 0);
 
     /// <summary>
+    /// Respresents 1/8 as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Eighth { get; } = new(1, 8, 0);
+
+    /// <summary>
     /// Represents 1e18 as a <see cref="HugeNumber"/>.
     /// </summary>
-    public static HugeNumber Exa { get; } = new(100000000000000000, 1);
+    public static HugeNumber Exa { get; } = new(100000000000000000, 0);
 
     /// <summary>
     /// Represents 1e-15 as a <see cref="HugeNumber"/>.
     /// </summary>
     public static HugeNumber Femto { get; } = new(1, -15);
+
+    /// <summary>
+    /// Respresents ¼ as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber Fourth { get; } = new(1, 4, 0);
 
     /// <summary>
     /// Represents 1000000000 (1e9) as a <see cref="HugeNumber"/>.
@@ -123,6 +133,16 @@ public static class HugeNumberConstants
     /// Respresents ⅓ as a <see cref="HugeNumber"/>.
     /// </summary>
     public static HugeNumber Third { get; } = new(1, 3, 0);
+
+    /// <summary>
+    /// Respresents ¾ as a <see cref="HugeNumber"/>.
+    /// </summary>
+    public static HugeNumber ThreeFourths { get; } = new(3, 4, 0);
+
+    /// <summary>
+    /// 1+½
+    /// </summary>
+    public static HugeNumber ThreeHalves { get; } = Third * Two;
 
     /// <summary>
     /// Respresents 2 as a <see cref="HugeNumber"/>.

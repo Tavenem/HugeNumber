@@ -1,6 +1,4 @@
-﻿using Tavenem.Mathematics;
-
-namespace Tavenem.HugeNumbers;
+﻿namespace Tavenem.HugeNumbers;
 
 public partial struct HugeNumber
 {

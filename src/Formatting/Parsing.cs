@@ -8,6 +8,39 @@ public partial struct HugeNumber
     /// Converts the string representation of a number in a specified style and culture-specific
     /// format to its <see cref="HugeNumber"/> equivalent.
     /// </summary>
+    /// <param name="value">A <see cref="ReadOnlySpan{T}"/> of <see cref="char"/> that contains
+    /// a number to convert.</param>
+    /// <param name="style">
+    /// A bitwise combination of the enumeration values that specify the permitted format of
+    /// <paramref name="value"/>.
+    /// </param>
+    /// <param name="provider">
+    /// <para>
+    /// An object that provides culture-specific formatting information about <paramref
+    /// name="value"/>.
+    /// </para>
+    /// <para>
+    /// If omitted, the current culture info will be used.
+    /// </para>
+    /// </param>
+    /// <returns>A value that is equivalent to the number specified in the value
+    /// parameter.</returns>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="style"/> is not a <see cref="NumberStyles"/> value. -or- <paramref
+    /// name="style"/> includes the <see cref="NumberStyles.AllowHexSpecifier"/> or <see
+    /// cref="NumberStyles.HexNumber"/> flag along with another value.
+    /// </exception>
+    /// <remarks>
+    /// Null strings, or those which do not comply with the input pattern specified by <paramref
+    /// name="style"/>, result in a return value of <see cref="NaN"/>.
+    /// </remarks>
+    public static HugeNumber Parse(ReadOnlySpan<char> value, NumberStyles style, IFormatProvider? provider = null)
+        => TryParse(value, style, provider, out var result) ? result : NaN;
+
+    /// <summary>
+    /// Converts the string representation of a number in a specified style and culture-specific
+    /// format to its <see cref="HugeNumber"/> equivalent.
+    /// </summary>
     /// <param name="value">A string that contains a number to convert.</param>
     /// <param name="style">
     /// A bitwise combination of the enumeration values that specify the permitted format of
@@ -45,15 +78,11 @@ public partial struct HugeNumber
     }
 
     /// <summary>
-    /// Converts the string representation of a number in a specified style and culture-specific
-    /// format to its <see cref="HugeNumber"/> equivalent.
+    /// Converts the string representation of a number in a specified culture-specific format to
+    /// its <see cref="HugeNumber"/> equivalent.
     /// </summary>
     /// <param name="value">A <see cref="ReadOnlySpan{T}"/> of <see cref="char"/> that contains
     /// a number to convert.</param>
-    /// <param name="style">
-    /// A bitwise combination of the enumeration values that specify the permitted format of
-    /// <paramref name="value"/>.
-    /// </param>
     /// <param name="provider">
     /// <para>
     /// An object that provides culture-specific formatting information about <paramref
@@ -65,17 +94,12 @@ public partial struct HugeNumber
     /// </param>
     /// <returns>A value that is equivalent to the number specified in the value
     /// parameter.</returns>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="style"/> is not a <see cref="NumberStyles"/> value. -or- <paramref
-    /// name="style"/> includes the <see cref="NumberStyles.AllowHexSpecifier"/> or <see
-    /// cref="NumberStyles.HexNumber"/> flag along with another value.
-    /// </exception>
     /// <remarks>
-    /// Null strings, or those which do not comply with the input pattern specified by <paramref
-    /// name="style"/>, result in a return value of <see cref="NaN"/>.
+    /// Null strings, or those which are not in the correct format, result in a return value of
+    /// <see cref="NaN"/>.
     /// </remarks>
-    public static HugeNumber Parse(ReadOnlySpan<char> value, NumberStyles style, IFormatProvider? provider = null)
-        => TryParse(value, style, provider, out var result) ? result : NaN;
+    public static HugeNumber Parse(ReadOnlySpan<char> value, IFormatProvider? provider = null)
+        => Parse(value, NumberStyles.Float | NumberStyles.Any, provider);
 
     /// <summary>
     /// Converts the string representation of a number in a specified culture-specific format to
@@ -98,30 +122,6 @@ public partial struct HugeNumber
     /// <see cref="NaN"/>.
     /// </remarks>
     public static HugeNumber Parse(string? value, IFormatProvider? provider = null)
-        => Parse(value, NumberStyles.Float | NumberStyles.Any, provider);
-
-    /// <summary>
-    /// Converts the string representation of a number in a specified culture-specific format to
-    /// its <see cref="HugeNumber"/> equivalent.
-    /// </summary>
-    /// <param name="value">A <see cref="ReadOnlySpan{T}"/> of <see cref="char"/> that contains
-    /// a number to convert.</param>
-    /// <param name="provider">
-    /// <para>
-    /// An object that provides culture-specific formatting information about <paramref
-    /// name="value"/>.
-    /// </para>
-    /// <para>
-    /// If omitted, the current culture info will be used.
-    /// </para>
-    /// </param>
-    /// <returns>A value that is equivalent to the number specified in the value
-    /// parameter.</returns>
-    /// <remarks>
-    /// Null strings, or those which are not in the correct format, result in a return value of
-    /// <see cref="NaN"/>.
-    /// </remarks>
-    public static HugeNumber Parse(ReadOnlySpan<char> value, IFormatProvider? provider = null)
         => Parse(value, NumberStyles.Float | NumberStyles.Any, provider);
 
     /// <summary>
