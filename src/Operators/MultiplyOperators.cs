@@ -40,7 +40,7 @@ public partial struct HugeNumber
         }
         if (left.Mantissa == 0 || right.Mantissa == 0)
         {
-            return (left.Exponent < 0) != (right.Exponent < 0)
+            return left.IsNegative() != right.IsNegative()
                 ? NegativeZero
                 : Zero;
         }

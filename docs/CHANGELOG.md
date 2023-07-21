@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2
+### Fixed
+- Multiplication resulted in -0 in some cases when it should not have
+
 ## 2.1
 ### Updated
 - Update to .NET 7

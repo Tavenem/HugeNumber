@@ -111,6 +111,12 @@ public class MathTests
         first = new HugeNumber(300000000000000000, -10);
         second = new HugeNumber(200000000000000000, -12);
         Assert.AreEqual(new HugeNumber(6, 12), first * second);
+
+        first = HugeNumber.Zero;
+        second = new HugeNumber(127485571494234550, -6);
+        var result = first * second;
+        Assert.IsTrue(result.IsZero());
+        Assert.IsFalse(result.IsNegative());
     }
 
     [TestMethod]
