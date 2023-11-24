@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3
+### Changed
+- Update to .NET 8
+
 ## 2.2
 ### Fixed
 - Multiplication resulted in -0 in some cases when it should not have
@@ -7,48 +11,18 @@
 ## 2.1
 ### Updated
 - Update to .NET 7
-
-## 2.1.0-preview.1
-### Updated
-- Update to .NET 7 RC
 - Remove dependency on preview features and experimental NuGet package
 
 ## 2.0.0
-### Updated
-- Update to release packages
-
-## 2.0.0-preview.7
-### Fixed
-- `Atan` implementation
-
-## 2.0.0-preview.6
-### Fixed
-- decimal conversion
-
-## 2.0.0-preview.5
-### Added
-- Implement `ICreateOther`
-
-## 2.0.0-preview.4
-### Updated
-- Dependencies
-
-## 2.0.0-preview.3
 ### Added
 - Implement rational fraction support
-### Changed
-- Move most non-standard constants to `HugeNumberConstants` static class in `Tavenem.Mathematics` namespace
-### Removed
-- Remove support for non-JSON serialization
-
-## 2.0.0-preview.2
-### Changed
-- Make `HugeNumber` struct readonly
-
-## 2.0.0-preview.1
+- Implement `ICreateOther`
 ### Changed
 - Update to .NET 6 preview
 - Update to C# 10 preview
+- Update to release packages
+- Make `HugeNumber` struct readonly
+- Move most non-standard constants to `HugeNumberConstants` static class in `Tavenem.Mathematics` namespace
 - Implement `IFloatingPoint`
 - Rename static `e` to `E` to align with `IFloatingPoint`
 - Rename static `PI` and related to `Pi` to align with `IFloatingPoint`
@@ -68,6 +42,11 @@
       Values serialized using previous versions will not deserialize properly with new versions, and vice versa.
 - Removed `IsZero` property, optimized equality to short-circuit on zero instead
 - Changed default rounding to nearest even, to better align with `IFloatingPoint`, and added overloads with a `MidpointRounding` parameter
+### Fixed
+- `Atan` implementation
+- decimal conversion
+### Removed
+- Remove support for non-JSON serialization
 
 ## 1.0.2
 ### Fixed
