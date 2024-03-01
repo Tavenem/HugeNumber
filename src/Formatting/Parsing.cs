@@ -189,7 +189,7 @@ public partial struct HugeNumber
 
         var isNegative = false;
         if ((style & NumberStyles.AllowParentheses) != 0
-            && val.StartsWith(new ReadOnlySpan<char>(new char[] { '(' })) && val.EndsWith(new ReadOnlySpan<char>(new char[] { ')' })))
+            && val.StartsWith(new ReadOnlySpan<char>(['('])) && val.EndsWith(new ReadOnlySpan<char>([')'])))
         {
             isNegative = true;
             val = val[1..^1];

@@ -13,7 +13,7 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
     /// </summary>
     public static readonly HugeNumberFormatProvider Instance = new();
 
-    private static readonly char[] _AllowedFormatChars = new char[] { 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'n', 'N', 'p', 'P', 'r', 'R' };
+    private static readonly char[] _AllowedFormatChars = ['c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'n', 'N', 'p', 'P', 'r', 'R'];
 
     /// <summary>
     /// Attempts to write the given <paramref name="number"/> to the given <see cref="Span{T}"/>.
@@ -209,8 +209,8 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
                         ? int.Parse(mantissaSpan.Slice(sepIndex + decimalSeparator.Length, 1))
                         : int.Parse(mantissaSpan.Slice(sepIndex + decimalSeparator.Length + precision.Value, 1));
                     mantissaSpan = precision.Value <= 0
-                        ? mantissaSpan.Slice(0, sepIndex)
-                        : mantissaSpan.Slice(0, sepIndex + decimalSeparator.Length + precision.Value);
+                        ? mantissaSpan[..sepIndex]
+                        : mantissaSpan[..(sepIndex + decimalSeparator.Length + precision.Value)];
                     if (nextDigit >= 5)
                     {
                         mantissaSpan = new StringBuilder(mantissaSpan.Length)
@@ -237,7 +237,7 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
             }
             else
             {
-                sb.Append(rawMantissaSpan.Slice(0, rawMantissaSpan.Length + exponent))
+                sb.Append(rawMantissaSpan[..(rawMantissaSpan.Length + exponent)])
                     .Append(decimalSeparator)
                     .Append(rawMantissaSpan[(rawMantissaSpan.Length + exponent)..]);
             }
@@ -254,8 +254,8 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
                         ? int.Parse(mantissaSpan.Slice(sepIndex + decimalSeparator.Length, 1))
                         : int.Parse(mantissaSpan.Slice(sepIndex + decimalSeparator.Length + precision.Value, 1));
                     mantissaSpan = precision.Value <= 0
-                        ? mantissaSpan.Slice(0, sepIndex)
-                        : mantissaSpan.Slice(0, sepIndex + decimalSeparator.Length + precision.Value);
+                        ? mantissaSpan[..sepIndex]
+                        : mantissaSpan[..(sepIndex + decimalSeparator.Length + precision.Value)];
                     if (nextDigit >= 5)
                     {
                         sb.Clear();
@@ -290,7 +290,7 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
                     }
                     if (nextDigit >= 5)
                     {
-                        var lastDigit = int.Parse(new ReadOnlySpan<char>(new[] { sb[^1] }));
+                        var lastDigit = int.Parse(new ReadOnlySpan<char>([sb[^1]]));
                         sb.Remove(sb.Length - 1, 1);
                         sb.Append(lastDigit + 1);
                     }
@@ -300,7 +300,7 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
             else
             {
                 mantissaSpan = new StringBuilder()
-                    .Append(rawMantissaSpan.Slice(0, rawMantissaSpan.Length + exponent))
+                    .Append(rawMantissaSpan[..(rawMantissaSpan.Length + exponent)])
                     .Append(decimalSeparator)
                     .Append(rawMantissaSpan[(rawMantissaSpan.Length + exponent)..])
                     .TrimEnd('0')
@@ -315,8 +315,8 @@ public class HugeNumberFormatProvider : IFormatProvider, ICustomFormatter
                             ? int.Parse(mantissaSpan.Slice(sepIndex + decimalSeparator.Length, 1))
                             : int.Parse(mantissaSpan.Slice(sepIndex + decimalSeparator.Length + precision.Value, 1));
                         mantissaSpan = precision.Value <= 0
-                            ? mantissaSpan.Slice(0, sepIndex)
-                            : mantissaSpan.Slice(0, sepIndex + decimalSeparator.Length + precision.Value);
+                            ? mantissaSpan[..sepIndex]
+                            : mantissaSpan[..(sepIndex + decimalSeparator.Length + precision.Value)];
                         if (nextDigit >= 5)
                         {
                             mantissaSpan = new StringBuilder(mantissaSpan.Length)
