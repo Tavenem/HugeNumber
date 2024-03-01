@@ -82,6 +82,23 @@ public class MathTests
     }
 
     [TestMethod]
+    public void DivRem()
+    {
+        var first = new HugeNumber(3) / HugeNumberConstants.Ten;
+        var second = new HugeNumber(3);
+        var (quotient, remainder) = HugeNumber.DivRem(first, second);
+        Assert.AreEqual(HugeNumber.Zero, quotient);
+        Assert.AreEqual(HugeNumberConstants.Deci, remainder);
+
+        first = new HugeNumber(3) / HugeNumberConstants.Ten;
+        second = HugeNumberConstants.Fourth;
+        (quotient, remainder) = HugeNumber.DivRem(first, second);
+        Assert.AreEqual(HugeNumber.One, quotient);
+        var twoTenths = HugeNumberConstants.Two / HugeNumberConstants.Ten;
+        Assert.AreEqual(twoTenths, remainder);
+    }
+
+    [TestMethod]
     public void LogarithmTest()
     {
         var first = new HugeNumber(6);
@@ -274,5 +291,10 @@ public class MathTests
         Assert.AreEqual(2, second);
 
         Assert.AreEqual(1, first - second);
+
+        first = new HugeNumber(3) / HugeNumberConstants.Ten;
+        second = HugeNumberConstants.Fourth;
+        var twentieth = HugeNumber.One / new HugeNumber(20);
+        Assert.AreEqual(twentieth, first - second);
     }
 }

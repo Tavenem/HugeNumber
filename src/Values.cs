@@ -111,13 +111,13 @@ public partial struct HugeNumber
     /// </summary>
     public static HugeNumber Tau { get; } = new(628318530717958647, -17);
 
-    private static readonly HugeNumber[] _TangentTaylorSeries = new HugeNumber[]
-    {
+    private static readonly HugeNumber[] _TangentTaylorSeries =
+    [
         new(1, 3, 1),
         new(2, 15, 1),
         new(17, 315, 1),
         new(62, 2835, 1),
-    };
+    ];
     private static readonly HugeNumber _Root3 = new(173205080756887729, -17);
     private static readonly HugeNumber _TwoMinusRoot3 = new(267949192431122706, -18);
 }

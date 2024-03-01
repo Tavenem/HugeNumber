@@ -9,6 +9,10 @@ public partial struct HugeNumber
     /// <returns>The ceiling of <paramref name="x"/>.</returns>
     public static HugeNumber Ceiling(HugeNumber x)
     {
+        if (x.Denominator > 1)
+        {
+            x = ToDenominator(x, 1);
+        }
         if (x.Exponent < 0)
         {
             var mantissa = x.Mantissa;
@@ -40,6 +44,10 @@ public partial struct HugeNumber
     /// <returns>The floor of <paramref name="x"/>.</returns>
     public static HugeNumber Floor(HugeNumber x)
     {
+        if (x.Denominator > 1)
+        {
+            x = ToDenominator(x, 1);
+        }
         if (x.Exponent < 0)
         {
             var mantissa = x.Mantissa;

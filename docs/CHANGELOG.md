@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4
+### Fixed
+- DivRem for rational fractions
+
 ## 2.3
 ### Changed
 - Update to .NET 8
