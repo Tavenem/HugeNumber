@@ -459,13 +459,28 @@ public partial struct HugeNumber
             }
         }
 
-        var adjustedExponent = value.Exponent + (value.MantissaDigits - 1);
-        var otherAdjustedExponent = other.Exponent + (other.MantissaDigits - 1);
-
         // comparison between equal exponents
-        if (adjustedExponent == otherAdjustedExponent)
+        if (value.Exponent == other.Exponent)
         {
             return value.Mantissa.CompareTo(other.Mantissa);
+        }
+
+        var mantissaShift = value.MantissaDigits - 1;
+        var adjustedExponent = value.Exponent + mantissaShift;
+
+        var otherMantissaShift = other.MantissaDigits - 1;
+        var otherAdjustedExponent = other.Exponent + otherMantissaShift;
+
+        // comparison between equal adjusted exponents
+        if (adjustedExponent == otherAdjustedExponent)
+        {
+            var adjustedMantissa = mantissaShift <= 0
+                ? value.Mantissa
+                : value.Mantissa / (10 * mantissaShift);
+            var otherAdjustedMantissa = otherMantissaShift <= 0
+                ? value.Mantissa
+                : value.Mantissa / (10 * otherMantissaShift);
+            return adjustedMantissa.CompareTo(otherAdjustedMantissa);
         }
 
         // comparison of exponents covers all other cases (mantissa comparison is

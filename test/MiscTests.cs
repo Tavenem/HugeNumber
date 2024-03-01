@@ -13,7 +13,7 @@ public class MiscTests
         Assert.IsFalse(value <= 75000);
         Assert.IsTrue(value <= 10000000);
         Assert.IsTrue(value <= 30000000);
-        Assert.IsTrue(new HugeNumber(4) > (new HugeNumber(3) / HugeNumberConstants.Ten));
+        Assert.IsFalse(HugeNumber.One / new HugeNumber(4) > (new HugeNumber(3) / HugeNumberConstants.Ten));
     }
 
     [TestMethod]

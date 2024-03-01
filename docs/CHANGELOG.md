@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5
+### Fixed
+- Comparison of rational fractions
+
 ## 2.4
 ### Fixed
 - DivRem for rational fractions
