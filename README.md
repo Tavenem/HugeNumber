@@ -1,4 +1,4 @@
-![build](https://img.shields.io/github/workflow/status/Tavenem/HugeNumber/publish/main) [![NuGet downloads](https://img.shields.io/nuget/dt/Tavenem.HugeNumber)](https://www.nuget.org/packages/Tavenem.HugeNumber/)
+![build](https://img.shields.io/github/actions/workflow/status/Tavenem/HugeNumber/publish.yml?branch=main) [![NuGet downloads](https://img.shields.io/nuget/dt/Tavenem.HugeNumber)](https://www.nuget.org/packages/Tavenem.HugeNumber/)
 
 Tavenem.HugeNumber
 ==
