@@ -290,6 +290,7 @@ public static class HugeNumberConstants
     /// The Avogadro constant (<i>N</i><sub>A</sub>, <i>L</i>), in SI base units.
     /// </summary>
     public static readonly HugeNumber AvogadroConstant = new(602214076, 15);
+
     /// <summary>
     /// The Avogadro constant (<i>N</i><sub>A</sub>, <i>L</i>), in SI base units.
     /// </summary>
@@ -299,6 +300,7 @@ public static class HugeNumberConstants
     /// The Boltzmann constant (<i>k</i><sub>B</sub>, <i>k</i>), in SI base units.
     /// </summary>
     public static readonly HugeNumber BoltzmannConstant = new(1380649, -29);
+
     /// <summary>
     /// The Boltzmann constant (<i>k</i><sub>B</sub>, <i>k</i>), in SI base units.
     /// </summary>
@@ -313,6 +315,7 @@ public static class HugeNumberConstants
     /// The elementary charge (<i>e</i>, <i>q</i><sub>e</sub>), in coulombs.
     /// </summary>
     public static readonly HugeNumber ElementaryCharge = new(1602176634, -28);
+
     /// <summary>
     /// The elementary charge (<i>e</i>, <i>q</i><sub>e</sub>), in coulombs.
     /// </summary>
@@ -322,10 +325,12 @@ public static class HugeNumberConstants
     /// The gravitational constant, in SI base units.
     /// </summary>
     public static readonly HugeNumber GravitationalConstant = new(667408, -16);
+
     /// <summary>
     /// The gravitational constant, in SI base units.
     /// </summary>
     public static readonly HugeNumber G = GravitationalConstant;
+
     /// <summary>
     /// Twice the gravitational constant, in SI base units.
     /// </summary>
@@ -335,6 +340,7 @@ public static class HugeNumberConstants
     /// The heat of vaporization of water, in SI base units.
     /// </summary>
     public const int HeatOfVaporizationOfWater = 2501000;
+
     /// <summary>
     /// The heat of vaporization of water, in SI base units.
     /// </summary>
@@ -349,6 +355,7 @@ public static class HugeNumberConstants
     /// The distance light travels in a Julian year, in m.
     /// </summary>
     public const long LightYear = 9460730472580800;
+
     /// <summary>
     /// The distance light travels in a Julian year, in m.
     /// </summary>
@@ -358,6 +365,7 @@ public static class HugeNumberConstants
     /// The molar mass of air, in SI base units.
     /// </summary>
     public static readonly HugeNumber MolarMassOfAir = new(289644, -7);
+
     /// <summary>
     /// The molar mass of air, in SI base units.
     /// </summary>
@@ -372,6 +380,7 @@ public static class HugeNumberConstants
     /// The Planck constant (<i>h</i>) in SI base units.
     /// </summary>
     public static readonly HugeNumber PlanckConstant = new(662607015, -42);
+
     /// <summary>
     /// The Planck constant (<i>h</i>) in SI base units.
     /// </summary>
@@ -386,6 +395,7 @@ public static class HugeNumberConstants
     /// The specific gas constant of dry air, in SI base units.
     /// </summary>
     public const int SpecificGasConstantOfDryAir = 287;
+
     /// <summary>
     /// The specific gas constant of dry air, in SI base units.
     /// </summary>
@@ -395,6 +405,7 @@ public static class HugeNumberConstants
     /// The specific gas constant of water, in SI base units.
     /// </summary>
     public static readonly HugeNumber SpecificGasConstantOfWater = new(4615, -1);
+
     /// <summary>
     /// The specific gas constant of water, in SI base units.
     /// </summary>
@@ -409,6 +420,7 @@ public static class HugeNumberConstants
     /// The specific heat of dry air at constant pressure, in SI base units.
     /// </summary>
     public static readonly HugeNumber SpecificHeatOfDryAir = new(10035, -1);
+
     /// <summary>
     /// The specific heat of dry air at constant pressure, in SI base units.
     /// </summary>
@@ -428,6 +440,7 @@ public static class HugeNumberConstants
     /// The speed of light in a vacuum, in m/s.
     /// </summary>
     public const int SpeedOfLight = 299792458;
+
     /// <summary>
     /// The speed of light in a vacuum, in m/s.
     /// </summary>
@@ -437,6 +450,7 @@ public static class HugeNumberConstants
     /// The speed of light in a vacuum, squared, in m/s.
     /// </summary>
     public static readonly HugeNumber SpeedOfLightSquared = ((HugeNumber)SpeedOfLight).Square();
+
     /// <summary>
     /// The speed of light in a vacuum, squared, in m/s.
     /// </summary>
@@ -446,6 +460,7 @@ public static class HugeNumberConstants
     /// The standard atmospheric pressure, in SI base units.
     /// </summary>
     public static readonly HugeNumber StandardAtmosphericPressure = new(101325, -3);
+
     /// <summary>
     /// The standard atmospheric pressure, in SI base units.
     /// </summary>
@@ -455,6 +470,7 @@ public static class HugeNumberConstants
     /// The Stefan–Boltzmann constant, in SI base units.
     /// </summary>
     public static readonly HugeNumber StefanBoltzmannConstant = new(5670367, -14);
+
     /// <summary>
     /// The Stefan–Boltzmann constant, in SI base units.
     /// </summary>
@@ -469,6 +485,7 @@ public static class HugeNumberConstants
     /// The universal gas constant, in SI base units.
     /// </summary>
     public static readonly HugeNumber UniversalGasConstant = new(83144598, -7);
+
     /// <summary>
     /// The universal gas constant, in SI base units.
     /// </summary>

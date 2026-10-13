@@ -16,6 +16,7 @@ public partial struct HugeNumber
     /// Gets the value <c>1</c> for <see cref="HugeNumber"/>.
     /// </summary>
     public static HugeNumber One { get; } = new(1, 0);
+
     /// <summary>
     /// <para>
     /// Gets the multiplicative identity of <see cref="HugeNumber"/>.
@@ -30,6 +31,7 @@ public partial struct HugeNumber
     /// Gets the value <c>0</c> for <see cref="HugeNumber"/>.
     /// </summary>
     public static HugeNumber Zero => new(0, 0);
+
     /// <summary>
     /// <para>
     /// Gets the additive identity of the current type.

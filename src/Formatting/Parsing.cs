@@ -99,7 +99,7 @@ public partial struct HugeNumber
     /// <see cref="NaN"/>.
     /// </remarks>
     public static HugeNumber Parse(ReadOnlySpan<char> value, IFormatProvider? provider = null)
-        => Parse(value, NumberStyles.Float | NumberStyles.Any, provider);
+        => Parse(value, NumberStyles.Any, provider);
 
     /// <summary>
     /// Converts the string representation of a number in a specified culture-specific format to
@@ -122,7 +122,7 @@ public partial struct HugeNumber
     /// <see cref="NaN"/>.
     /// </remarks>
     public static HugeNumber Parse(string? value, IFormatProvider? provider = null)
-        => Parse(value, NumberStyles.Float | NumberStyles.Any, provider);
+        => Parse(value, NumberStyles.Any, provider);
 
     /// <summary>
     /// Tries to convert the string representation of a number in a specified style and
@@ -386,7 +386,7 @@ public partial struct HugeNumber
     /// successfully; otherwise, <see langword="false"/>.
     /// </returns>
     public static bool TryParse(ReadOnlySpan<char> value, IFormatProvider? provider, out HugeNumber result)
-        => TryParse(value, NumberStyles.Float | NumberStyles.Any, provider, out result);
+        => TryParse(value, NumberStyles.Any, provider, out result);
 
     /// <summary>
     /// Tries to convert the string representation of a number in a specified style and
@@ -416,7 +416,7 @@ public partial struct HugeNumber
     /// successfully; otherwise, <see langword="false"/>.
     /// </returns>
     public static bool TryParse(string? value, IFormatProvider? provider, out HugeNumber result)
-        => TryParse(value.AsSpan(), NumberStyles.Float | NumberStyles.Any, provider, out result);
+        => TryParse(value.AsSpan(), NumberStyles.Any, provider, out result);
 
     /// <summary>
     /// Tries to convert the string representation of a number to its <see cref="HugeNumber"/>
@@ -434,7 +434,7 @@ public partial struct HugeNumber
     /// successfully; otherwise, <see langword="false"/>.
     /// </returns>
     public static bool TryParse(ReadOnlySpan<char> value, out HugeNumber result)
-        => TryParse(value, NumberStyles.Float | NumberStyles.Any, HugeNumberFormatProvider.Instance, out result);
+        => TryParse(value, NumberStyles.Any, HugeNumberFormatProvider.Instance, out result);
 
     /// <summary>
     /// Tries to convert the string representation of a number to its <see cref="HugeNumber"/>
@@ -452,7 +452,7 @@ public partial struct HugeNumber
     /// successfully; otherwise, <see langword="false"/>.
     /// </returns>
     public static bool TryParse(string? value, out HugeNumber result)
-        => TryParse(value.AsSpan(), NumberStyles.Float | NumberStyles.Any, HugeNumberFormatProvider.Instance, out result);
+        => TryParse(value.AsSpan(), NumberStyles.Any, HugeNumberFormatProvider.Instance, out result);
 
     private static bool TryParseValue(
         ReadOnlySpan<char> value,

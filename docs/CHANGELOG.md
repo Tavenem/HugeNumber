@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.6
+### Changed
+- Update to .NET 10
+
 ## 2.5
 ### Fixed
 - Comparison of rational fractions
